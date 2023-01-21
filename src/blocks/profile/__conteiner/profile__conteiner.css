@@ -1,0 +1,13 @@
+.profile__conteiner {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 150px calc(100% - 330px) 180px;
+}
+
+@media screen and (max-width:767px) {
+  .profile__conteiner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}

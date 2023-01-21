@@ -1,0 +1,8 @@
+.large-picture {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  align-self: center;
+  margin: 0 auto;
+  position: relative;
+}

@@ -1,0 +1,9 @@
+.cards__item {
+  background: #FFFFFF;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 42px;
+  grid-template-rows: 1fr 79px;
+  align-items: center;
+  position: relative;
+}

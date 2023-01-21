@@ -1,0 +1,26 @@
+.header {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.header::after {
+  content: '';
+  display: inline-block;
+  width: 100%;
+  border: 1px solid #545454;
+  opacity: 0.7;
+  margin-top: 41px;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 1023px) {
+  .header {
+    max-width: 80vw;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .header {
+    max-width: 100%;
+  }
+}
