@@ -1,21 +1,25 @@
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import ConfirmationDeletePopup from './ConfirmationDeletePopup';
+import InfoTooltip from './InfoTooltip';
 import ImagePopup from './ImagePopup';
 import { useEffect, useState } from 'react';
 import { api } from '../utils/api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import AddPlacePopup from './AddPlacePopup';
 import Register from './Register';
+import Login from './Login';
 
 function App() {
   const [isEditAvatarPopupOpen, setisEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
   const [isAconfirmation, setisconfirmation] = useState(false);
+  const [isInfoTooltip, setIsInfoTooltip] = useState(true);
   const [isOpenLargePictures, setIsOpenLargePictures] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [buttonTextAddForm, setButtonTextAddForm] = useState('Создать');
@@ -167,49 +171,62 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="root">
-        <Header />
-        <Main
-          handleEditAvatarClick={handleEditAvatarClick}
-          handleEditProfileClick={handleEditProfileClick}
-          handleAddPlaceClick={handleAddPlaceClick}
-          handleConfirmationClick={handleConfirmationClick}
-          onCardClick={handleCardClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handlebucketClick}
-        ></Main>
-        <Footer />
-        <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser}
-          buttonText={buttonTextEditProfileForm}
-        ></EditProfilePopup>
-        <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
-          buttonText={buttonTextEditAvatarForm}
-        ></EditAvatarPopup>
-        <AddPlacePopup
-          onAddPlace={handleAddPlaceSubmit}
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-          buttonText={buttonTextAddForm}
-        ></AddPlacePopup>
-        <ConfirmationDeletePopup
-          isOpen={isAconfirmation}
-          onClose={closeAllPopups}
-          buttonText={buttonTextConfirmationPopup}
-          handleDeletedCard={handleCardDelete}
-        ></ConfirmationDeletePopup>
-        <ImagePopup
-          card={selectedCard}
-          isOpen={isOpenLargePictures}
-          onClose={closeAllPopups}
-        ></ImagePopup>
-      </div>
+      <BrowserRouter>
+        <div className="root">
+          <Header />
+          <Routes>
+            <Route
+              exact
+              path="/"
+              element={
+                <Main
+                  handleEditAvatarClick={handleEditAvatarClick}
+                  handleEditProfileClick={handleEditProfileClick}
+                  handleAddPlaceClick={handleAddPlaceClick}
+                  handleConfirmationClick={handleConfirmationClick}
+                  onCardClick={handleCardClick}
+                  cards={cards}
+                  onCardLike={handleCardLike}
+                  onCardDelete={handlebucketClick}
+                />
+              }
+            ></Route>
+            <Route exact path="/" element={<Footer />}></Route>
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/register" element={<Register />}></Route>
+          </Routes>
+          <EditProfilePopup
+            isOpen={isEditProfilePopupOpen}
+            onClose={closeAllPopups}
+            onUpdateUser={handleUpdateUser}
+            buttonText={buttonTextEditProfileForm}
+          ></EditProfilePopup>
+          <EditAvatarPopup
+            isOpen={isEditAvatarPopupOpen}
+            onClose={closeAllPopups}
+            onUpdateAvatar={handleUpdateAvatar}
+            buttonText={buttonTextEditAvatarForm}
+          ></EditAvatarPopup>
+          <AddPlacePopup
+            onAddPlace={handleAddPlaceSubmit}
+            isOpen={isAddPlacePopupOpen}
+            onClose={closeAllPopups}
+            buttonText={buttonTextAddForm}
+          ></AddPlacePopup>
+          <ConfirmationDeletePopup
+            isOpen={isAconfirmation}
+            onClose={closeAllPopups}
+            buttonText={buttonTextConfirmationPopup}
+            handleDeletedCard={handleCardDelete}
+          ></ConfirmationDeletePopup>
+          <ImagePopup
+            card={selectedCard}
+            isOpen={isOpenLargePictures}
+            onClose={closeAllPopups}
+          ></ImagePopup>
+          {/* <InfoTooltip isOpen={isInfoTooltip} message={false}></InfoTooltip> */}
+        </div>
+      </BrowserRouter>
     </CurrentUserContext.Provider>
   );
 }

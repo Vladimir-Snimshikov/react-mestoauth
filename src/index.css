@@ -40,3 +40,98 @@
 @import url(./blocks/large-picture/__signature/large-picture__signature.css);
 @import url(./blocks/popup/__input-span/popup__input-span.css);
 @import url(./blocks/popup/__input-span/_type/popup__input-span_type_error.css);
+
+.auth {
+  margin: 0 auto;
+  padding-top: 60px;
+}
+
+.auth__title {
+  margin: 0;
+  text-align: center;
+}
+
+.auth__button {
+  padding: 0;
+  border: 0;
+  margin-top: 186px;
+  height: 50px;
+}
+
+.auth__input {
+  box-sizing: border-box;
+  color: white;
+  background-color: black;
+  margin-bottom: 30px;
+  width: 100%;
+  border: none;
+  padding: 0;
+  padding-bottom: 13px;
+  border-bottom: 2px solid #cccccc;
+  outline: none;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.auth__link {
+  display: block;
+  text-align: center;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.form {
+  padding: 50px 30px 15px;
+  margin: 0 auto;
+  max-width: 358px;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth__tooltip-text {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+  color: #000000;
+  margin: 0 0 23px;
+}
+
+.auth__tooltip-image {
+  margin: 0 auto;
+  width: 150px;
+  height: 120px;
+  background: url(../src/images/tooltip-image.svg) no-repeat center;
+}
+
+.auth__tooltip-image_error {
+  background: url(../src/images/tooltip-image-err.svg) no-repeat center;
+}
+
+.header__email {
+}
+
+.header__link {
+}
+
+.header {
+  padding-top: 45px;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media screen and (max-width: 767px) {
+  .header {
+    padding-top: 28;
+  }
+}
