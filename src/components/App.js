@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { api } from '../utils/api.js';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -7,8 +9,7 @@ import EditAvatarPopup from './EditAvatarPopup';
 import ConfirmationDeletePopup from './ConfirmationDeletePopup';
 import InfoTooltip from './InfoTooltip';
 import ImagePopup from './ImagePopup';
-import { useEffect, useState } from 'react';
-import { api } from '../utils/api.js';
+import ProtectedRoute from './ProtectedRoute.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import AddPlacePopup from './AddPlacePopup';
 import Register from './Register';
@@ -33,6 +34,8 @@ function App() {
   const [cardForDeleted, setCardForDeleted] = useState(null); // стейт для хранения карточки которую надо удалить через попап
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+
+  const [loggedIn, setLoggedIn] = useState(true);
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getAllCards()])
@@ -175,11 +178,14 @@ function App() {
         <div className="root">
           <Header />
           <Routes>
+            <Route path="/sign-in" element={<Login />}></Route>
+            <Route path="/sign-up" element={<Register />}></Route>
             <Route
-              exact
               path="/"
               element={
-                <Main
+                <ProtectedRoute
+                  element={Main}
+                  loggedIn={false}
                   handleEditAvatarClick={handleEditAvatarClick}
                   handleEditProfileClick={handleEditProfileClick}
                   handleAddPlaceClick={handleAddPlaceClick}
@@ -191,9 +197,6 @@ function App() {
                 />
               }
             ></Route>
-            <Route exact path="/" element={<Footer />}></Route>
-            <Route path="/login" element={<Login />}></Route>
-            <Route path="/register" element={<Register />}></Route>
           </Routes>
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen}

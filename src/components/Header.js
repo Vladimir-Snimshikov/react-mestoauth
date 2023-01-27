@@ -2,7 +2,6 @@ import logo from '../images/header-logo.svg';
 import { useLocation, Link } from 'react-router-dom';
 export default function Header() {
   const location = useLocation();
-  console.log(location);
 
   return (
     <header className="header">
@@ -13,15 +12,15 @@ export default function Header() {
         )}
         <Link
           to={
-            (location.pathname === '/' && '/login') ||
-            (location.pathname === '/login' && '/register') ||
-            (location.pathname === '/register' && '/login ')
+            (location.pathname === '/' && '/sign-in') ||
+            (location.pathname === '/sign-in' && '/sign-up') ||
+            (location.pathname === '/sign-up' && '/sign-in')
           }
         >
           <button className="header__link">
             {(location.pathname === '/' && 'Выйти') ||
-              (location.pathname === '/login' && 'Регистрация') ||
-              (location.pathname === '/register' && 'Войти')}
+              (location.pathname === '/sign-in' && 'Регистрация') ||
+              (location.pathname === '/sign-up' && 'Войти')}
           </button>
         </Link>
       </div>

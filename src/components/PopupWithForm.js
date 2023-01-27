@@ -7,7 +7,6 @@ export default function PopupWithForm({
   isOpen,
   onSubmit,
   validity,
-  isBlack,
 }) {
   return (
     <div
