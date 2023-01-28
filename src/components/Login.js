@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import * as auth from '../utils/auth.js';
 
-function Login() {
+function Login({ handleLoginClick }) {
   const [formValue, setFormValue] = useState({
     password: '',
     email: '',
@@ -19,7 +18,13 @@ function Login() {
   const handleSubmit = (e) => {
     const { email, password } = formValue;
     e.preventDefault();
-    auth.login(password, email);
+
+    handleLoginClick(password, email);
+
+    setFormValue({
+      password: '',
+      email: '',
+    });
   };
 
   return (
@@ -27,6 +32,7 @@ function Login() {
       <h2 className="auth__title">Вход</h2>
       <form onSubmit={handleSubmit} className="form">
         <input
+          value={formValue.email}
           name="email"
           onChange={handleChange}
           type="email"
@@ -35,6 +41,7 @@ function Login() {
           required
         />
         <input
+          value={formValue.password}
           name="password"
           onChange={handleChange}
           type="password"

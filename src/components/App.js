@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '../utils/api.js';
 import Header from './Header';
@@ -36,24 +36,28 @@ function App() {
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
 
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (loggedIn) {
+      Promise.all([api.getUserInfo(), api.getAllCards()])
+        .then(([userInfo, allCards]) => {
+          navigate('/react-mestoauth', { replace: true });
+          setCards(allCards);
+          setCurrentUser(userInfo);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn]);
 
   useEffect(() => {
     auth.auth().then((res) => {
-      console.log(res.data.email);
+      setLoggedIn(true);
       setCurrentUser({ ...currentUser, email: res.data.email });
     });
-  }, []);
-
-  useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getAllCards()])
-      .then(([userInfo, allCards]) => {
-        setCards(allCards);
-        setCurrentUser(userInfo);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   }, []);
 
   function handleEditAvatarClick() {
@@ -125,11 +129,24 @@ function App() {
       });
   }
 
+  function handleLoginClick(password, email) {
+    auth.login(password, email).then((data) => {
+      console.log(data);
+      localStorage.setItem('jwt', data.token);
+      setLoggedIn(true);
+      navigate('/react-mestoauth', { replace: true });
+    });
+  }
+
+  function handleLogOutClick() {
+    localStorage.removeItem('jwt');
+    navigate('/sign-in', { replace: true });
+    setLoggedIn(false);
+  }
+
   function handleCardLike(card) {
-    // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
-    // Отправляем запрос в API и получаем обновлённые данные карточки
     api
       .toggleLike(card._id, isLiked)
       .then((newCard) => {
@@ -176,68 +193,84 @@ function App() {
       setisEditProfilePopupOpen(false);
       setisEditAvatarPopupOpen(false);
       setIsOpenLargePictures(false);
+      setIsInfoTooltip(false);
       setSelectedCard({});
     }
+  }
+  function handleRegisterClick(password, email) {
+    auth.register(password, email).then((res) => {
+      console.log(res);
+      navigate('/sign-in', { replace: true });
+    });
   }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <BrowserRouter>
-        <div className="root">
-          <Header />
-          <Routes>
-            <Route path="/sign-in" element={<Login />}></Route>
-            <Route path="/sign-up" element={<Register />}></Route>
-            <Route
-              path="/react-mestoauth"
-              element={
-                <ProtectedRoute
-                  element={Main}
-                  loggedIn={false}
-                  handleEditAvatarClick={handleEditAvatarClick}
-                  handleEditProfileClick={handleEditProfileClick}
-                  handleAddPlaceClick={handleAddPlaceClick}
-                  handleConfirmationClick={handleConfirmationClick}
-                  onCardClick={handleCardClick}
-                  cards={cards}
-                  onCardLike={handleCardLike}
-                  onCardDelete={handlebucketClick}
-                />
-              }
-            ></Route>
-          </Routes>
-          <EditProfilePopup
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-            onUpdateUser={handleUpdateUser}
-            buttonText={buttonTextEditProfileForm}
-          ></EditProfilePopup>
-          <EditAvatarPopup
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-            onUpdateAvatar={handleUpdateAvatar}
-            buttonText={buttonTextEditAvatarForm}
-          ></EditAvatarPopup>
-          <AddPlacePopup
-            onAddPlace={handleAddPlaceSubmit}
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            buttonText={buttonTextAddForm}
-          ></AddPlacePopup>
-          <ConfirmationDeletePopup
-            isOpen={isAconfirmation}
-            onClose={closeAllPopups}
-            buttonText={buttonTextConfirmationPopup}
-            handleDeletedCard={handleCardDelete}
-          ></ConfirmationDeletePopup>
-          <ImagePopup
-            card={selectedCard}
-            isOpen={isOpenLargePictures}
-            onClose={closeAllPopups}
-          ></ImagePopup>
-          {/* <InfoTooltip isOpen={isInfoTooltip} message={false}></InfoTooltip> */}
-        </div>
-      </BrowserRouter>
+      <div className="root">
+        <Header handleLoginClick={handleLogOutClick} />
+        <Routes>
+          <Route
+            path="/sign-in"
+            element={<Login handleLoginClick={handleLoginClick} />}
+          ></Route>
+          <Route
+            path="/sign-up"
+            element={<Register handleRegisterClick={handleRegisterClick} />}
+          ></Route>
+          <Route
+            path="/react-mestoauth"
+            element={
+              <ProtectedRoute
+                element={Main}
+                loggedIn={loggedIn}
+                handleEditAvatarClick={handleEditAvatarClick}
+                handleEditProfileClick={handleEditProfileClick}
+                handleAddPlaceClick={handleAddPlaceClick}
+                handleConfirmationClick={handleConfirmationClick}
+                onCardClick={handleCardClick}
+                cards={cards}
+                onCardLike={handleCardLike}
+                onCardDelete={handlebucketClick}
+              />
+            }
+          ></Route>
+        </Routes>
+        <Footer />
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser}
+          buttonText={buttonTextEditProfileForm}
+        ></EditProfilePopup>
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+          buttonText={buttonTextEditAvatarForm}
+        ></EditAvatarPopup>
+        <AddPlacePopup
+          onAddPlace={handleAddPlaceSubmit}
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          buttonText={buttonTextAddForm}
+        ></AddPlacePopup>
+        <ConfirmationDeletePopup
+          isOpen={isAconfirmation}
+          onClose={closeAllPopups}
+          buttonText={buttonTextConfirmationPopup}
+          handleDeletedCard={handleCardDelete}
+        ></ConfirmationDeletePopup>
+        <ImagePopup
+          card={selectedCard}
+          isOpen={isOpenLargePictures}
+          onClose={closeAllPopups}
+        ></ImagePopup>
+        <InfoTooltip
+          isOpen={isInfoTooltip}
+          message={true}
+          onClose={closeAllPopups}
+        ></InfoTooltip>
+      </div>
     </CurrentUserContext.Provider>
   );
 }

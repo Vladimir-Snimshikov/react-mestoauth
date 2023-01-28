@@ -1,5 +1,13 @@
 export const BASE_URL = 'https://auth.nomoreparties.co';
 
+function checkResponse(res) {
+  if (res.ok) {
+    return res.json();
+  } else {
+    return Promise.reject(`Ошибка ${res.status}`);
+  }
+}
+
 export function register(password, email) {
   return fetch(`${BASE_URL}/signup`, {
     method: 'POST',
@@ -8,13 +16,9 @@ export function register(password, email) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ password, email }),
-  })
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  }).then((res) => {
+    return checkResponse(res);
+  });
 }
 
 export function login(password, email) {
@@ -25,23 +29,9 @@ export function login(password, email) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ password, email }),
-  })
-    .then((res) => {
-      try {
-        if (res.status === 200) {
-          return res.json();
-        }
-      } catch (e) {
-        return e;
-      }
-    })
-    .then((data) => {
-      console.log(data.token);
-      localStorage.setItem('token', data.token);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  }).then((res) => {
+    return checkResponse(res);
+  });
 }
 
 export function auth() {
@@ -50,11 +40,7 @@ export function auth() {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('jwt')}`,
     },
-  })
-    .then((res) => res.json())
-    .catch((err) => {
-      console.log(err);
-    });
+  }).then((res) => checkResponse(res));
 }
