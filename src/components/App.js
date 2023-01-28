@@ -14,6 +14,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import AddPlacePopup from './AddPlacePopup';
 import Register from './Register';
 import Login from './Login';
+import * as auth from '../utils/auth.js';
 
 function App() {
   const [isEditAvatarPopupOpen, setisEditAvatarPopupOpen] = useState(false);
@@ -36,6 +37,13 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
 
   const [loggedIn, setLoggedIn] = useState(true);
+
+  useEffect(() => {
+    auth.auth().then((res) => {
+      console.log(res.data.email);
+      setCurrentUser({ ...currentUser, email: res.data.email });
+    });
+  }, []);
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getAllCards()])
@@ -181,7 +189,7 @@ function App() {
             <Route path="/sign-in" element={<Login />}></Route>
             <Route path="/sign-up" element={<Register />}></Route>
             <Route
-              path="/"
+              path="/react-mestoauth"
               element={
                 <ProtectedRoute
                   element={Main}

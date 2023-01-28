@@ -1,34 +1,42 @@
 import React, { useState } from 'react';
+import * as auth from '../utils/auth.js';
 
 function Login() {
-  const [emailState, setEmailState] = useState();
-  const [passwordState, setPasswordState] = useState();
+  const [formValue, setFormValue] = useState({
+    password: '',
+    email: '',
+  });
 
-  function handleSubmit(evt) {
-    evt.preventDefault();
-    console.log({
-      email: emailState,
-      password: passwordState,
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormValue({
+      ...formValue,
+      [name]: value,
     });
-    return {
-      email: emailState,
-      password: passwordState,
-    };
-  }
+  };
+
+  const handleSubmit = (e) => {
+    const { email, password } = formValue;
+    e.preventDefault();
+    auth.login(password, email);
+  };
 
   return (
     <section className="auth">
       <h2 className="auth__title">Вход</h2>
       <form onSubmit={handleSubmit} className="form">
         <input
-          onChange={(evt) => setEmailState({ email: evt.target.value })}
+          name="email"
+          onChange={handleChange}
           type="email"
           className="auth__input"
           placeholder="Email"
           required
         />
         <input
-          onChange={(evt) => setPasswordState({ password: evt.target.value })}
+          name="password"
+          onChange={handleChange}
           type="password"
           className="auth__input"
           placeholder="Пароль"

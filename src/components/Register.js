@@ -24,7 +24,9 @@ function Register({ onRegister }) {
     e.preventDefault();
 
     auth.register(password, email).then((res) => {
-      navigate('/sign-in', { replace: true });
+      if (res.status === 201) {
+        navigate('/sign-in', { replace: true });
+      }
     });
   };
 
