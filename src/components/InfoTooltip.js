@@ -8,7 +8,6 @@ function InfoTooltip({ onClose, state }) {
           }`}
         />
         <p className="auth__tooltip-text">{state.message}</p>
-
         <button
           type="button"
           className="popup__exit-button"

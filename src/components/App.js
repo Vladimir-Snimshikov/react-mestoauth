@@ -16,18 +16,20 @@ import Register from './Register';
 import Login from './Login';
 import Loading from './Loading.js';
 import * as auth from '../utils/auth.js';
+import { tooltip } from '../utils/utils.js';
 
 function App() {
   const [isEditAvatarPopupOpen, setisEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
   const [isAconfirmation, setisconfirmation] = useState(false);
-  const [isInfoTooltip, setIsInfoTooltip] = useState({
+  const [isOpenLargePictures, setIsOpenLargePictures] = useState(false);
+  const [infoTooltip, setInfoTooltip] = useState({
     message: '',
     isOpen: false,
     error: null,
   });
-  const [isOpenLargePictures, setIsOpenLargePictures] = useState(false);
+
   const [selectedCard, setSelectedCard] = useState({});
   const [buttonTextAddForm, setButtonTextAddForm] = useState('Создать');
   const [buttonTextEditProfileForm, setButtonTextEditProfileForm] =
@@ -91,7 +93,7 @@ function App() {
   }
 
   function handleUpdateUser(data) {
-    setButtonTextEditProfileForm('Сохранение');
+    setButtonTextEditProfileForm('Сохранение...');
     api
       .editProfile(data)
       .then((dataUser) => {
@@ -140,7 +142,6 @@ function App() {
 
   function handleLoginClick(password, email) {
     auth.login(password, email).then((data) => {
-      console.log(data);
       localStorage.setItem('jwt', data.token);
       setCurrentUser({ ...currentUser, email: email });
       setLoggedIn(true);
@@ -203,7 +204,7 @@ function App() {
       setisEditProfilePopupOpen(false);
       setisEditAvatarPopupOpen(false);
       setIsOpenLargePictures(false);
-      setIsInfoTooltip(false);
+      setInfoTooltip({ ...infoTooltip, isOpen: false });
       setSelectedCard({});
     }
   }
@@ -211,17 +212,16 @@ function App() {
     auth
       .register(password, email)
       .then((res) => {
-        console.log(res);
-        setIsInfoTooltip({
-          message: 'Вы успешно зарегистрировались!',
+        setInfoTooltip({
+          message: tooltip.message,
           isOpen: true,
           error: false,
         });
         navigate('/sign-in', { replace: true });
       })
       .catch((res) => {
-        setIsInfoTooltip({
-          message: 'Что-то пошло не так!Попробуйте ещё раз',
+        setInfoTooltip({
+          message: tooltip.messageErr,
           isOpen: true,
           error: true,
         });
@@ -293,10 +293,7 @@ function App() {
           isOpen={isOpenLargePictures}
           onClose={closeAllPopups}
         ></ImagePopup>
-        <InfoTooltip
-          state={isInfoTooltip}
-          onClose={closeAllPopups}
-        ></InfoTooltip>
+        <InfoTooltip state={infoTooltip} onClose={closeAllPopups}></InfoTooltip>
       </div>
     </CurrentUserContext.Provider>
   );

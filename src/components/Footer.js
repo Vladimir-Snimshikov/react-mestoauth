@@ -1,4 +1,4 @@
-export default function Footer({}) {
+export default function Footer() {
   let currentYear = new Date().getFullYear();
   return (
     <footer className="footer">
