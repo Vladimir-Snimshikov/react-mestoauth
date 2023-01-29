@@ -1,17 +1,13 @@
-function InfoTooltip({ message, onClose, isOpen }) {
+function InfoTooltip({ onClose, state }) {
   return (
-    <div className={` popup  ${isOpen ? `popup_opened` : ''}`}>
+    <div className={` popup  ${state.isOpen ? `popup_opened` : ''}`}>
       <div className=" auth popup__container">
         <div
           className={`auth__tooltip-image ${
-            !message ? 'auth__tooltip-image_error' : ''
+            state.error ? 'auth__tooltip-image_error' : ''
           }`}
         />
-        <p className="auth__tooltip-text">
-          {message
-            ? 'Вы успешно зарегистрировались!'
-            : 'Что-то пошло не так! Попробуйте ещё раз.'}
-        </p>
+        <p className="auth__tooltip-text">{state.message}</p>
 
         <button
           type="button"

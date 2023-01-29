@@ -21,7 +21,11 @@ function App() {
   const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
   const [isAconfirmation, setisconfirmation] = useState(false);
-  const [isInfoTooltip, setIsInfoTooltip] = useState(true);
+  const [isInfoTooltip, setIsInfoTooltip] = useState({
+    message: '',
+    isOpen: false,
+    error: null,
+  });
   const [isOpenLargePictures, setIsOpenLargePictures] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [buttonTextAddForm, setButtonTextAddForm] = useState('Создать');
@@ -32,10 +36,9 @@ function App() {
   const [buttonTextConfirmationPopup, setButtonTextConfirmationPopup] =
     useState('Да');
 
-  const [cardForDeleted, setCardForDeleted] = useState(null); // стейт для хранения карточки которую надо удалить через попап
+  const [cardForDeleted, setCardForDeleted] = useState(null);
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
-
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
 
@@ -45,7 +48,7 @@ function App() {
         .then(([userInfo, allCards]) => {
           navigate('/react-mestoauth', { replace: true });
           setCards(allCards);
-          setCurrentUser(userInfo);
+          setCurrentUser({ ...currentUser, ...userInfo });
         })
         .catch((err) => {
           console.log(err);
@@ -133,6 +136,7 @@ function App() {
     auth.login(password, email).then((data) => {
       console.log(data);
       localStorage.setItem('jwt', data.token);
+      setCurrentUser({ ...currentUser, email: email });
       setLoggedIn(true);
       navigate('/react-mestoauth', { replace: true });
     });
@@ -198,10 +202,24 @@ function App() {
     }
   }
   function handleRegisterClick(password, email) {
-    auth.register(password, email).then((res) => {
-      console.log(res);
-      navigate('/sign-in', { replace: true });
-    });
+    auth
+      .register(password, email)
+      .then((res) => {
+        console.log(res);
+        setIsInfoTooltip({
+          message: 'Вы успешно зарегистрировались!',
+          isOpen: true,
+          error: false,
+        });
+        navigate('/sign-in', { replace: true });
+      })
+      .catch((res) => {
+        setIsInfoTooltip({
+          message: 'Что-то пошло не так!Попробуйте ещё раз',
+          isOpen: true,
+          error: true,
+        });
+      });
   }
 
   return (
@@ -266,8 +284,7 @@ function App() {
           onClose={closeAllPopups}
         ></ImagePopup>
         <InfoTooltip
-          isOpen={isInfoTooltip}
-          message={true}
+          state={isInfoTooltip}
           onClose={closeAllPopups}
         ></InfoTooltip>
       </div>
