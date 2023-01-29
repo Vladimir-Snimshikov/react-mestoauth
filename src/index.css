@@ -1,6 +1,15 @@
 @import url(./vendor/normalize.css);
 @import url(./vendor/font.css);
 @import url(./blocks/root/root.css);
+@import url(./blocks/auth/__tooltip-image/auth__tooltip-image.css);
+@import url(./blocks/auth/__tooltip-image/_error/auth__tooltip-image_error.css);
+@import url(./blocks/auth/__tooltip-text/auth__tooltip-text.css);
+@import url(./blocks/auth/__link/auth__link.css);
+@import url(./blocks/auth/__input/auth__input.css);
+@import url(./blocks/auth/__button/auth__button.css);
+@import url(./blocks/auth/__title/auth__title\ .css);
+@import url(./blocks/auth/auth.css);
+@import url(./blocks/form/form.css);
 @import url(./blocks/content/content.css);
 @import url(./blocks/cards/cards.css);
 @import url(./blocks/cards/__img/cards__img.css);
@@ -13,6 +22,9 @@
 @import url(./blocks/footer/footer.css);
 @import url(./blocks/footer/__copyright/footer__copyright.css);
 @import url(./blocks/header/header.css);
+@import url(./blocks/header/__info-container/header__info-container.css);
+@import url(./blocks/header/__link/header__link.css);
+@import url(./blocks/header/__email/header__email.css);
 @import url(./blocks/header/__logo/header__logo.css);
 @import url(./blocks/places/places.css);
 @import url(./blocks/popup/popup.css);
@@ -40,111 +52,21 @@
 @import url(./blocks/large-picture/__signature/large-picture__signature.css);
 @import url(./blocks/popup/__input-span/popup__input-span.css);
 @import url(./blocks/popup/__input-span/_type/popup__input-span_type_error.css);
+@import url(./blocks/preloader/preloader.css);
+@import url(./blocks/preloader/__item/preloader__item.css);
 
-.auth {
-  margin: 0 auto;
-  padding-top: 60px;
-}
-
-.auth__title {
-  margin: 0;
-  text-align: center;
-}
-
-.auth__button {
-  padding: 0;
-  border: 0;
-  margin-top: 186px;
-  height: 50px;
-}
-
-.auth__input {
-  box-sizing: border-box;
-  color: white;
-  background-color: black;
-  margin-bottom: 30px;
-  width: 100%;
-  border: none;
-  padding: 0;
-  padding-bottom: 13px;
-  border-bottom: 2px solid #cccccc;
-  outline: none;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 17px;
-}
-
-.auth__link {
-  display: block;
-  text-align: center;
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 17px;
-  color: #ffffff;
-  text-decoration: none;
-}
-
-.form {
-  padding: 50px 30px 15px;
-  margin: 0 auto;
-  max-width: 358px;
+.header__burger-menu {
   display: flex;
   flex-direction: column;
+  gap: 9px;
+  margin-right: 30px;
 }
 
-.auth__tooltip-text {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 900;
-  font-size: 24px;
-  line-height: 29px;
-  text-align: center;
-  color: #000000;
-  margin: 0 0 23px;
-}
-
-.auth__tooltip-image {
-  margin: 0 auto;
-  width: 150px;
-  height: 120px;
-  background: url(../src/images/tooltip-image.svg) no-repeat center;
-}
-
-.auth__tooltip-image_error {
-  background: url(../src/images/tooltip-image-err.svg) no-repeat center;
-}
-
-.header__email {
-  margin-right: 24px;
-}
-
-.header__link {
-  padding: 0;
+.header__burger-line {
+  display: block;
   margin: 0;
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 22px;
-  text-align: right;
-  border: 0;
-  background-color: transparent;
-  color: #a9a9a9;
-}
-
-.header {
-  padding-top: 45px;
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-@media screen and (max-width: 767px) {
-  .header {
-    padding-top: 28;
-  }
+  width: 24px;
+  height: 3px;
+  transition: 0.2s;
+  background-color: white;
 }

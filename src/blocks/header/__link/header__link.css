@@ -1,0 +1,19 @@
+.header__link {
+  padding: 0;
+  margin: 0;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: right;
+  border: 0;
+  background-color: transparent;
+  color: #a9a9a9;
+}
+
+@media screen and (max-width: 767px) {
+  .header__link {
+    margin-right: 30px;
+  }
+}

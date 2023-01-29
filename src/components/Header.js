@@ -4,10 +4,9 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 import { useLocation, Link } from 'react-router-dom';
 
-export default function Header({ handleLoginClick }) {
+export default function Header({ handleLoginClick, isLoggin }) {
   const location = useLocation();
   const currentUser = React.useContext(CurrentUserContext);
-  console.log(currentUser);
 
   return (
     <header className="header">

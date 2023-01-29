@@ -14,6 +14,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import AddPlacePopup from './AddPlacePopup';
 import Register from './Register';
 import Login from './Login';
+import Loading from './Loading.js';
 import * as auth from '../utils/auth.js';
 
 function App() {
@@ -42,6 +43,8 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
 
+  const [pageLoading, setPageLoading] = useState(true);
+
   useEffect(() => {
     if (loggedIn) {
       Promise.all([api.getUserInfo(), api.getAllCards()])
@@ -52,6 +55,9 @@ function App() {
         })
         .catch((err) => {
           console.log(err);
+        })
+        .finally(() => {
+          setPageLoading(false);
         });
     }
   }, [loggedIn]);
@@ -89,7 +95,7 @@ function App() {
     api
       .editProfile(data)
       .then((dataUser) => {
-        setCurrentUser(dataUser);
+        setCurrentUser({ ...currentUser, ...dataUser });
         setisEditProfilePopupOpen(false);
       })
       .catch((err) => {
@@ -105,7 +111,7 @@ function App() {
     api
       .putAvatar(dataAvatar)
       .then((dataAvatar) => {
-        setCurrentUser(dataAvatar);
+        setCurrentUser({ ...currentUser, ...dataAvatar });
         setisEditAvatarPopupOpen(false);
       })
       .catch((err) => {
@@ -225,7 +231,7 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="root">
-        <Header handleLoginClick={handleLogOutClick} />
+        <Header handleLoginClick={handleLogOutClick} isLoggin={loggedIn} />
         <Routes>
           <Route
             path="/sign-in"
@@ -238,18 +244,22 @@ function App() {
           <Route
             path="/react-mestoauth"
             element={
-              <ProtectedRoute
-                element={Main}
-                loggedIn={loggedIn}
-                handleEditAvatarClick={handleEditAvatarClick}
-                handleEditProfileClick={handleEditProfileClick}
-                handleAddPlaceClick={handleAddPlaceClick}
-                handleConfirmationClick={handleConfirmationClick}
-                onCardClick={handleCardClick}
-                cards={cards}
-                onCardLike={handleCardLike}
-                onCardDelete={handlebucketClick}
-              />
+              pageLoading ? (
+                <Loading />
+              ) : (
+                <ProtectedRoute
+                  element={Main}
+                  loggedIn={loggedIn}
+                  handleEditAvatarClick={handleEditAvatarClick}
+                  handleEditProfileClick={handleEditProfileClick}
+                  handleAddPlaceClick={handleAddPlaceClick}
+                  handleConfirmationClick={handleConfirmationClick}
+                  onCardClick={handleCardClick}
+                  cards={cards}
+                  onCardLike={handleCardLike}
+                  onCardDelete={handlebucketClick}
+                />
+              )
             }
           ></Route>
         </Routes>

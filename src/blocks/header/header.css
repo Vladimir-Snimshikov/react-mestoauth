@@ -1,6 +1,11 @@
 .header {
   max-width: 880px;
   margin: 0 auto;
+  padding: 45px 0 46px;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
 .header::after {
@@ -24,5 +29,6 @@
 @media screen and (max-width: 767px) {
   .header {
     max-width: 100%;
+    padding-top: 28;
   }
 }

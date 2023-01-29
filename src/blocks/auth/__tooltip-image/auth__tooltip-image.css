@@ -1,0 +1,6 @@
+.auth__tooltip-image {
+  margin: 0 auto;
+  width: 150px;
+  height: 120px;
+  background: url(../../../images/tooltip-image.svg) no-repeat center;
+}
