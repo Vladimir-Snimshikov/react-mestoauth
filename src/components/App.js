@@ -51,7 +51,7 @@ function App() {
     if (loggedIn) {
       Promise.all([api.getUserInfo(), api.getAllCards()])
         .then(([userInfo, allCards]) => {
-          navigate('/react-mestoauth', { replace: true });
+          navigate('/', { replace: true });
           setCards(allCards);
           setCurrentUser({ ...currentUser, ...userInfo });
         })
@@ -65,10 +65,15 @@ function App() {
   }, [loggedIn]);
 
   useEffect(() => {
-    auth.auth().then((res) => {
-      setLoggedIn(true);
-      setCurrentUser({ ...currentUser, email: res.data.email });
-    });
+    auth
+      .auth()
+      .then((res) => {
+        setLoggedIn(true);
+        setCurrentUser({ ...currentUser, email: res.data.email });
+      })
+      .finally(() => {
+        setPageLoading(false);
+      });
   }, []);
 
   function handleEditAvatarClick() {
@@ -145,7 +150,7 @@ function App() {
       localStorage.setItem('jwt', data.token);
       setCurrentUser({ ...currentUser, email: email });
       setLoggedIn(true);
-      navigate('/react-mestoauth', { replace: true });
+      navigate('/', { replace: true });
     });
   }
 
@@ -242,7 +247,7 @@ function App() {
             element={<Register handleRegisterClick={handleRegisterClick} />}
           ></Route>
           <Route
-            path="/react-mestoauth"
+            path="/"
             element={
               pageLoading ? (
                 <Loading />
