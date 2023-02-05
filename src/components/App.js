@@ -49,6 +49,7 @@ function App() {
 
   useEffect(() => {
     if (loggedIn) {
+      setPageLoading(true);
       Promise.all([api.getUserInfo(), api.getAllCards()])
         .then(([userInfo, allCards]) => {
           navigate('/', { replace: true });
@@ -65,15 +66,23 @@ function App() {
   }, [loggedIn]);
 
   useEffect(() => {
-    auth
-      .auth()
-      .then((res) => {
-        setLoggedIn(true);
-        setCurrentUser({ ...currentUser, email: res.data.email });
-      })
-      .finally(() => {
-        setPageLoading(false);
-      });
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      auth
+        .auth(jwt)
+        .then((res) => {
+          setLoggedIn(true);
+          setCurrentUser({ ...currentUser, email: res.data.email });
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setPageLoading(false);
+        });
+    } else {
+      setPageLoading(false);
+    }
   }, []);
 
   function handleEditAvatarClick() {

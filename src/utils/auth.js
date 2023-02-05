@@ -34,13 +34,13 @@ export function login(password, email) {
   });
 }
 
-export function auth() {
+export function auth(jwt) {
   return fetch(`${BASE_URL}/users/me`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+      Authorization: `Bearer ${jwt}`,
     },
   }).then((res) => checkResponse(res));
 }
