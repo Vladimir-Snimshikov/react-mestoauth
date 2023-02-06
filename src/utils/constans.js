@@ -69,3 +69,8 @@ export const titleTexts = {
 
   textEditProfile: 'Редактировать профиль',
 };
+
+export const tooltip = {
+  message: 'Вы успешно зарегистрировались!',
+  messageErr: 'Что-то пошло не так!Попробуйте ещё раз',
+};
