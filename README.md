@@ -1,4 +1,4 @@
-# Проэкт:Mesto-React (учебный проект)
+# Проэкт:Mesto-React (с регистрацией и авторизацией)
 
 - [Ссылка на проект](https://vladimir-snimshikov.github.io/react-mestoauth/#/sign-up)
 
