@@ -1,21 +1,29 @@
+import { elemClasses } from '../utils/constans';
 export default function ImagePopup({ card, isOpen, onClose }) {
+  const {
+    popup,
+    popupTypeLargePicture,
+    popupOpened,
+    popupExitButton,
+    largePicture,
+    largePictureImg,
+    largePictureSignature,
+  } = elemClasses;
   return (
     <div
       onClick={onClose}
-      className={`popup popup_type_large-picture ${
-        isOpen ? `popup_opened` : ''
+      className={`${popup} ${popupTypeLargePicture} ${
+        isOpen ? popupOpened : ''
       }`}
     >
-      <figure className="large-picture">
+      <figure className={largePicture}>
         <button
           type="button"
-          className="popup__exit-button"
+          className={popupExitButton}
           aria-label="закрыть форму"
         ></button>
-        <img className="large-picture__img" src={card.link} alt={card.name} />
-        <figcaption className="large-picture__signature">
-          {card.name}
-        </figcaption>
+        <img className={largePictureImg} src={card.link} alt={card.name} />
+        <figcaption className={largePictureSignature}>{card.name}</figcaption>
       </figure>
     </div>
   );

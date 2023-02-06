@@ -212,10 +212,10 @@ function App() {
   }
 
   function closeAllPopups(evt) {
-    const { popupOpened, popupExitBbutton } = elemClasses;
+    const { popupOpened, popupExitButton } = elemClasses;
     if (
       evt.target.classList.contains(popupOpened) ||
-      evt.target.classList.contains(popupExitBbutton)
+      evt.target.classList.contains(popupExitButton)
     ) {
       setisconfirmation(false);
       setisAddPlacePopupOpen(false);

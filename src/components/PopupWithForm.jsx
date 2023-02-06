@@ -1,3 +1,4 @@
+import { elemClasses } from '../utils/constans';
 export default function PopupWithForm({
   onClose,
   name,
@@ -8,24 +9,34 @@ export default function PopupWithForm({
   onSubmit,
   validity,
 }) {
+  const {
+    popup,
+    popupOpened,
+    popupContainer,
+    popupForm,
+    popupTitle,
+    popupSubmiButton,
+    popupSubmitButtonDisabled,
+    popupExitButton,
+  } = elemClasses;
   return (
     <div
       onClick={onClose}
-      className={`popup popup_type_${name} ${isOpen ? `popup_opened` : ''}`}
+      className={`${popup} popup_type_${name} ${isOpen ? popupOpened : ''}`}
     >
       <form
-        className="popup__container popup__form"
+        className={`${popupContainer} ${popupForm}`}
         onSubmit={onSubmit}
         name={name}
         noValidate
       >
-        <h2 className="popup__title">{title}</h2>
+        <h2 className={popupTitle}>{title}</h2>
         {children}
         <button
           disabled={validity}
           type="submit"
-          className={`popup__submit-button ${
-            validity ? 'popup__submit-button_disabled' : ''
+          className={`${popupSubmiButton} ${
+            validity ? popupSubmitButtonDisabled : ''
           }`}
           aria-label="сохранить изменения"
         >
@@ -33,7 +44,7 @@ export default function PopupWithForm({
         </button>
         <button
           type="button"
-          className="popup__exit-button"
+          className={popupExitButton}
           aria-label="закрыть форму"
         ></button>
       </form>

@@ -1,16 +1,27 @@
+import { elemClasses } from '../utils/constans';
 function InfoTooltip({ onClose, state }) {
+  const {
+    auth,
+    popup,
+    popupOpened,
+    popupContainer,
+    authTooltipImage,
+    authTooltipImage_error,
+    authTooltipText,
+    popupExitButton,
+  } = elemClasses;
   return (
-    <div className={` popup  ${state.isOpen ? `popup_opened` : ''}`}>
-      <div className=" auth popup__container">
+    <div className={`${popup}  ${state.isOpen ? popupOpened : ''}`}>
+      <div className={`${auth} ${popupContainer}`}>
         <div
-          className={`auth__tooltip-image ${
-            state.error ? 'auth__tooltip-image_error' : ''
+          className={`${authTooltipImage} ${
+            state.error ? authTooltipImage_error : ''
           }`}
         />
-        <p className="auth__tooltip-text">{state.message}</p>
+        <p className={authTooltipText}>{state.message}</p>
         <button
           type="button"
-          className="popup__exit-button"
+          className={popupExitButton}
           aria-label="Закрыть"
           onClick={onClose}
         ></button>
