@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { elemClasses } from '../utils/constans';
 
 function Register({ handleRegisterClick }) {
+  const { auth, authTitle, authInput, authButton, authLink, form } =
+    elemClasses;
   const [formValue, setFormValue] = useState({
     password: '',
     email: '',
@@ -24,14 +27,14 @@ function Register({ handleRegisterClick }) {
   };
 
   return (
-    <section className="auth">
-      <h2 className="auth__title">Регистрация</h2>
-      <form onSubmit={handleSubmit} className="form">
+    <section className={auth}>
+      <h2 className={authTitle}>Регистрация</h2>
+      <form onSubmit={handleSubmit} className={form}>
         <input
           onChange={handleChange}
           name="email"
           type="email"
-          className="auth__input"
+          className={authInput}
           placeholder="Email"
           required
         />
@@ -39,15 +42,15 @@ function Register({ handleRegisterClick }) {
           onChange={handleChange}
           name="password"
           type="password"
-          className="auth__input"
+          className={authInput}
           placeholder="Пароль"
           required
         />
-        <button type="submit" className="auth__button">
+        <button type="submit" className={authButton}>
           Зарегистрироваться
         </button>
       </form>
-      <Link className="auth__link" to="/sign-in">
+      <Link className={authLink} to="/sign-in">
         Уже зарегистрированы? Войти
       </Link>
     </section>

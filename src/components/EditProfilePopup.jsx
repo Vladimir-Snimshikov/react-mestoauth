@@ -1,5 +1,6 @@
 import React from 'react';
 import PopupWithForm from './PopupWithForm';
+import { elemClasses, titleTexts } from '../utils/constans';
 import { useState } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
@@ -9,6 +10,9 @@ export default function EditProfilePopup({
   onUpdateUser,
   buttonText,
 }) {
+  const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
+  const { textEditProfile } = titleTexts;
+
   const currentUser = React.useContext(CurrentUserContext);
 
   const [name, setName] = useState('');
@@ -45,7 +49,7 @@ export default function EditProfilePopup({
   return (
     <PopupWithForm
       name="edit-profile"
-      title="Редактировать профиль"
+      title={textEditProfile}
       buttonText={buttonText}
       isOpen={isOpen}
       onClose={onClose}
@@ -60,7 +64,7 @@ export default function EditProfilePopup({
         id="name-input"
         type="text"
         name="firstname"
-        className="popup__input"
+        className={popupInput}
         placeholder="Жак-Ив Кусто"
         minLength="2"
         maxLength="40"
@@ -68,7 +72,7 @@ export default function EditProfilePopup({
         onChange={handleChangeName}
         required
       />
-      <span className="popup__input-span popup__input-span_type_error">
+      <span className={`${popupInputSpan} ${popupInputSpanTypeError}`}>
         {validationMessageName}
       </span>
       <input
@@ -83,7 +87,7 @@ export default function EditProfilePopup({
         onChange={handleChangeDescription}
         required
       />
-      <span className="popup__input-span popup__input-span_type_error">
+      <span className={`${popupInputSpan} ${popupInputSpanTypeError}`}>
         {validationMessageDescription}
       </span>
     </PopupWithForm>

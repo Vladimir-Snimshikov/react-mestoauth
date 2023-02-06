@@ -1,5 +1,6 @@
 import React from 'react';
 import PopupWithForm from './PopupWithForm';
+import { titleTexts } from '../utils/constans';
 
 export default function ConfirmationDeletePopup({
   isOpen,
@@ -7,10 +8,11 @@ export default function ConfirmationDeletePopup({
   buttonText,
   handleDeletedCard,
 }) {
+  const { textAreYouSure } = titleTexts;
   return (
     <PopupWithForm
       name="confirmation"
-      title="Вы уверены?"
+      title={textAreYouSure}
       buttonText={buttonText}
       isOpen={isOpen}
       onClose={onClose}

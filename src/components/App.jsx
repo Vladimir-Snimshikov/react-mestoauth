@@ -1,6 +1,7 @@
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '../utils/api.js';
+import { elemClasses, saveButtonText } from '../utils/constans.js';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -9,16 +10,18 @@ import EditAvatarPopup from './EditAvatarPopup';
 import ConfirmationDeletePopup from './ConfirmationDeletePopup';
 import InfoTooltip from './InfoTooltip';
 import ImagePopup from './ImagePopup';
-import ProtectedRoute from './ProtectedRoute.js';
+import ProtectedRoute from './ProtectedRoute';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import AddPlacePopup from './AddPlacePopup';
 import Register from './Register';
 import Login from './Login';
-import Loading from './Loading.js';
+import Loading from './Loading';
 import * as auth from '../utils/auth.js';
 import { tooltip } from '../utils/utils.js';
 
 function App() {
+  const { textRemoval, textToCreate, textSave, textConservation } =
+    saveButtonText;
   const [isEditAvatarPopupOpen, setisEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
@@ -31,11 +34,11 @@ function App() {
   });
 
   const [selectedCard, setSelectedCard] = useState({});
-  const [buttonTextAddForm, setButtonTextAddForm] = useState('Создать');
+  const [buttonTextAddForm, setButtonTextAddForm] = useState(textToCreate);
   const [buttonTextEditProfileForm, setButtonTextEditProfileForm] =
-    useState('Сохранить');
+    useState(textSave);
   const [buttonTextEditAvatarForm, setButtonTextEditAvatarForm] =
-    useState('Сохранить');
+    useState(textSave);
   const [buttonTextConfirmationPopup, setButtonTextConfirmationPopup] =
     useState('Да');
 
@@ -107,7 +110,7 @@ function App() {
   }
 
   function handleUpdateUser(data) {
-    setButtonTextEditProfileForm('Сохранение...');
+    setButtonTextEditProfileForm(textConservation);
     api
       .editProfile(data)
       .then((dataUser) => {
@@ -118,12 +121,12 @@ function App() {
         console.log(err);
       })
       .finally(() => {
-        setButtonTextEditProfileForm('Сохранить');
+        setButtonTextEditProfileForm(textSave);
       });
   }
 
   function handleUpdateAvatar(dataAvatar) {
-    setButtonTextEditAvatarForm('Сохранение...');
+    setButtonTextEditAvatarForm(textConservation);
     api
       .putAvatar(dataAvatar)
       .then((dataAvatar) => {
@@ -134,12 +137,12 @@ function App() {
         console.log(err);
       })
       .finally(() => {
-        setButtonTextEditAvatarForm('Сохранить');
+        setButtonTextEditAvatarForm(textSave);
       });
   }
 
   function handleAddPlaceSubmit(cardData) {
-    setButtonTextAddForm('Сохранение...');
+    setButtonTextAddForm(textConservation);
     api
       .addCard(cardData)
       .then((newCard) => {
@@ -150,7 +153,7 @@ function App() {
         console.log(err);
       })
       .finally(() => {
-        setButtonTextAddForm('Создать');
+        setButtonTextAddForm(textToCreate);
       });
   }
 
@@ -191,7 +194,7 @@ function App() {
 
   function handleCardDelete(e) {
     e.preventDefault();
-    setButtonTextConfirmationPopup('Удаление...');
+    setButtonTextConfirmationPopup(textRemoval);
     api
       .deleteCard(cardForDeleted._id)
       .then(() => {
@@ -209,9 +212,10 @@ function App() {
   }
 
   function closeAllPopups(evt) {
+    const { popupOpened, popupExitButton } = elemClasses;
     if (
-      evt.target.classList.contains('popup_opened') ||
-      evt.target.classList.contains('popup__exit-button')
+      evt.target.classList.contains(popupOpened) ||
+      evt.target.classList.contains(popupExitButton)
     ) {
       setisconfirmation(false);
       setisAddPlacePopupOpen(false);

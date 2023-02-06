@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { elemClasses } from '../utils/constans';
 
 function Login({ handleLoginClick }) {
+  const { auth, authTitle, authInput, authButton } = elemClasses;
   const [formValue, setFormValue] = useState({
     password: '',
     email: '',
@@ -28,15 +30,15 @@ function Login({ handleLoginClick }) {
   };
 
   return (
-    <section className="auth">
-      <h2 className="auth__title">Вход</h2>
+    <section className={auth}>
+      <h2 className={authTitle}>Вход</h2>
       <form onSubmit={handleSubmit} className="form">
         <input
           value={formValue.email}
           name="email"
           onChange={handleChange}
           type="email"
-          className="auth__input"
+          className={authInput}
           placeholder="Email"
           required
         />
@@ -45,11 +47,11 @@ function Login({ handleLoginClick }) {
           name="password"
           onChange={handleChange}
           type="password"
-          className="auth__input"
+          className={authInput}
           placeholder="Пароль"
           required
         />
-        <button type="submit" className="auth__button">
+        <button type="submit" className={authButton}>
           Войти
         </button>
       </form>

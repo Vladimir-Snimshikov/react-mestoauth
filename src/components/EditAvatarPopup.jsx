@@ -1,6 +1,7 @@
 import React from 'react';
 import PopupWithForm from './PopupWithForm';
 import { useState } from 'react';
+import { elemClasses, titleTexts } from '../utils/constans';
 
 export default function EditAvatarPopup({
   isOpen,
@@ -8,6 +9,8 @@ export default function EditAvatarPopup({
   onUpdateAvatar,
   buttonText,
 }) {
+  const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
+  const { textUpdateAvatar } = titleTexts;
   const avatarRef = React.useRef();
 
   const [validationMessageLink, setValidatorMessageLink] = useState('');
@@ -28,7 +31,7 @@ export default function EditAvatarPopup({
   return (
     <PopupWithForm
       name="avatar-update"
-      title="Обновить аватар"
+      title={textUpdateAvatar}
       buttonText={buttonText}
       isOpen={isOpen}
       onClose={onClose}
@@ -40,12 +43,12 @@ export default function EditAvatarPopup({
         type="url"
         name="avatar"
         ref={avatarRef}
-        className="popup__input "
+        className={popupInput}
         placeholder="Ссылка на картинку"
         required
         onChange={handleChangeLink}
       />
-      <span className="popup__input-span popup__input-span_type_error">
+      <span className={`${popupInputSpan} ${popupInputSpanTypeError}`}>
         {validationMessageLink}
       </span>{' '}
     </PopupWithForm>

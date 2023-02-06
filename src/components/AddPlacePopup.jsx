@@ -1,4 +1,5 @@
 import React from 'react';
+import { elemClasses } from '../utils/constans';
 import PopupWithForm from './PopupWithForm';
 import { useState } from 'react';
 
@@ -8,6 +9,7 @@ export default function AddPlacePopup({
   onClose,
   buttonText,
 }) {
+  const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
   const cardNameRef = React.useRef();
   const cardLinkRef = React.useRef();
   const [validationMessageCardName, setValidationMessageCardName] =
@@ -53,14 +55,14 @@ export default function AddPlacePopup({
         id="imgName-input"
         type="text"
         name="name"
-        className="popup__input"
+        className={popupInput}
         placeholder="Название"
         minLength="2"
         maxLength="30"
         required
         onChange={handleChangeCardName}
       />
-      <span className="popup__input-span popup__input-span_type_error">
+      <span className={`${popupInputSpan} ${popupInputSpanTypeError}`}>
         {validationMessageCardName}
       </span>
       <input
@@ -73,7 +75,7 @@ export default function AddPlacePopup({
         required
         onChange={handleChangeCardLink}
       />
-      <span className="popup__input-span popup__input-span_type_error">
+      <span className={`${popupInputSpan} ${popupInputSpanTypeError}`}>
         {validationMessageCardLink}
       </span>
     </PopupWithForm>
