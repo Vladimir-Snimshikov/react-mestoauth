@@ -9,12 +9,12 @@ import EditAvatarPopup from './EditAvatarPopup';
 import ConfirmationDeletePopup from './ConfirmationDeletePopup';
 import InfoTooltip from './InfoTooltip';
 import ImagePopup from './ImagePopup';
-import ProtectedRoute from './ProtectedRoute.js';
+import ProtectedRoute from './ProtectedRoute';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import AddPlacePopup from './AddPlacePopup';
 import Register from './Register';
 import Login from './Login';
-import Loading from './Loading.js';
+import Loading from './Loading';
 import * as auth from '../utils/auth.js';
 import { tooltip } from '../utils/utils.js';
 
