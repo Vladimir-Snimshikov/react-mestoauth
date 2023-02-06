@@ -1,7 +1,7 @@
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '../utils/api.js';
-import { elemClasses, saveButtonText, tooltip } from '../utils/constans.js';
+import { elemClasses, saveButtonText } from '../utils/constans.js';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -17,6 +17,7 @@ import Register from './Register';
 import Login from './Login';
 import Loading from './Loading';
 import * as auth from '../utils/auth.js';
+import { tooltip } from '../utils/utils.js';
 
 function App() {
   const { textRemoval, textToCreate, textSave, textConservation } =
