@@ -26,6 +26,7 @@ export const elemClasses = {
   preloaderItem: 'preloader__item',
   places: 'places',
   cards: 'cards',
+  cardsImg: 'cards__img',
   cardsLikeImg: 'cards__like-img',
   cardsLikeImgActive: 'cards__like-img_active',
   cardsItem: 'cards__item',

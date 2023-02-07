@@ -2,6 +2,7 @@ import React from 'react';
 import PopupWithForm from './PopupWithForm';
 import { useState } from 'react';
 import { elemClasses, titleTexts } from '../utils/constans';
+import { useEffect } from 'react';
 
 export default function EditAvatarPopup({
   isOpen,
@@ -21,12 +22,14 @@ export default function EditAvatarPopup({
     onUpdateAvatar({
       avatar: avatarRef.current.value,
     });
-    avatarRef.current.value = '';
   }
 
   function handleChangeLink(e) {
     setValidatorMessageLink(e.target.validationMessage);
   }
+  useEffect(() => {
+    avatarRef.current.value = '';
+  }, [isOpen]);
 
   return (
     <PopupWithForm

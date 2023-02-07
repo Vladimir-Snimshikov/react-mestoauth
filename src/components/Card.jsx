@@ -11,6 +11,7 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
     cardsDleteButton,
     cardsTitle,
     cardsLikesCounter,
+    cardsImg,
   } = elemClasses;
 
   const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -43,7 +44,7 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
         ></button>
       )}
       <img
-        className="cards__img"
+        className={cardsImg}
         src={card.link}
         alt={card.name}
         onClick={handleCardClick}

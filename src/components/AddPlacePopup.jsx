@@ -2,6 +2,7 @@ import React from 'react';
 import { elemClasses } from '../utils/constans';
 import PopupWithForm from './PopupWithForm';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 export default function AddPlacePopup({
   onAddPlace,
@@ -24,8 +25,6 @@ export default function AddPlacePopup({
       name: cardNameRef.current.value,
       link: cardLinkRef.current.value,
     });
-    cardLinkRef.current.value = '';
-    cardNameRef.current.value = '';
   }
 
   function handleChangeCardLink(e) {
@@ -35,6 +34,10 @@ export default function AddPlacePopup({
   function handleChangeCardName(e) {
     setValidationMessageCardName(e.target.validationMessage);
   }
+  useEffect(() => {
+    cardLinkRef.current.value = '';
+    cardNameRef.current.value = '';
+  }, [isOpen]);
 
   return (
     <PopupWithForm
