@@ -2,7 +2,7 @@
 
 - [Ссылка на проект](https://vladimir-snimshikov.github.io/react-mestoauth/#/sign-up)
 
-<a href="https://vladimir-snimshikov.github.io/react-mestoauth/#/sign-in"><img src="https://s3.gifyu.com/images/readmegif.gif" width="300" alt="readmegif.gif" border="0" /></a>
+<a href="https://vladimir-snimshikov.github.io/react-mestoauth/#/sign-in"><img width="250" src="./src/images/readmegif.gif" alt="readmegif.gif" border="0" /></a>
 
 ## Обзор
 
