@@ -1,6 +1,8 @@
 import React from 'react';
 import { elemClasses } from '../utils/constans.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
+import { useDispatch } from 'react-redux';
+import { openPopup } from '../store/popupSlice.js';
 
 export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = React.useContext(CurrentUserContext);
@@ -18,7 +20,7 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const cardLikeButtonClassName = `${cardsLikeImg} ${
     isLiked && cardsLikeImgActive
   }`;
-
+  const dispatch = useDispatch();
   const isOwn = card.owner._id === currentUser._id;
 
   function handleCardClick() {
@@ -30,6 +32,7 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   }
 
   function handleCardDelete() {
+    dispatch(openPopup('confirmDeletePopup'));
     onCardDelete(card);
   }
 

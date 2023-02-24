@@ -18,20 +18,20 @@ import Login from './Login';
 import Loading from './Loading';
 import * as auth from '../utils/auth.js';
 import { tooltip } from '../utils/utils.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeAllPopup, selectPopupName } from '../store/popupSlice.js';
 
 function App() {
   const { textRemoval, textToCreate, textSave, textConservation } =
     saveButtonText;
-  const [isEditAvatarPopupOpen, setisEditAvatarPopupOpen] = useState(false);
-  const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = useState(false);
-  const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
-  const [isAconfirmation, setisconfirmation] = useState(false);
   const [isOpenLargePictures, setIsOpenLargePictures] = useState(false);
   const [infoTooltip, setInfoTooltip] = useState({
     message: '',
     isOpen: false,
     error: null,
   });
+  const curentPopupName = useSelector(selectPopupName);
+  const dispatch = useDispatch();
 
   const [selectedCard, setSelectedCard] = useState({});
   const [buttonTextAddForm, setButtonTextAddForm] = useState(textToCreate);
@@ -46,6 +46,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isconfirmation, setisconfirmation] = useState(false);
   const navigate = useNavigate();
 
   const [pageLoading, setPageLoading] = useState(true);
@@ -88,22 +89,6 @@ function App() {
     }
   }, []);
 
-  function handleEditAvatarClick() {
-    setisEditAvatarPopupOpen(true);
-  }
-
-  function handleEditProfileClick() {
-    setisEditProfilePopupOpen(true);
-  }
-
-  function handleAddPlaceClick() {
-    setisAddPlacePopupOpen(true);
-  }
-
-  function handleConfirmationClick() {
-    setisconfirmation(true);
-  }
-
   function handleCardClick(card) {
     setIsOpenLargePictures(true);
     setSelectedCard(card);
@@ -115,7 +100,7 @@ function App() {
       .editProfile(data)
       .then((dataUser) => {
         setCurrentUser({ ...currentUser, ...dataUser });
-        setisEditProfilePopupOpen(false);
+        dispatch(closeAllPopup());
       })
       .catch((err) => {
         console.log(err);
@@ -131,7 +116,7 @@ function App() {
       .putAvatar(dataAvatar)
       .then((dataAvatar) => {
         setCurrentUser({ ...currentUser, ...dataAvatar });
-        setisEditAvatarPopupOpen(false);
+        dispatch(closeAllPopup());
       })
       .catch((err) => {
         console.log(err);
@@ -147,7 +132,7 @@ function App() {
       .addCard(cardData)
       .then((newCard) => {
         setCards([newCard, ...cards]);
-        setisAddPlacePopupOpen(false);
+        dispatch(closeAllPopup());
       })
       .catch((err) => {
         console.log(err);
@@ -188,7 +173,6 @@ function App() {
   }
 
   function handlebucketClick(card) {
-    setisconfirmation(true);
     setCardForDeleted(card);
   }
 
@@ -201,7 +185,7 @@ function App() {
         setCards((state) => state.filter((c) => c._id !== cardForDeleted._id));
       })
       .then(() => {
-        setisconfirmation(false);
+        dispatch(closeAllPopup());
       })
       .catch((err) => {
         console.log(err);
@@ -217,13 +201,9 @@ function App() {
       evt.target.classList.contains(popupOpened) ||
       evt.target.classList.contains(popupExitButton)
     ) {
-      setisconfirmation(false);
-      setisAddPlacePopupOpen(false);
-      setisEditProfilePopupOpen(false);
-      setisEditAvatarPopupOpen(false);
-      setIsOpenLargePictures(false);
       setInfoTooltip({ ...infoTooltip, isOpen: false });
       setSelectedCard({});
+      dispatch(closeAllPopup());
     }
   }
   function handleRegisterClick(password, email) {
@@ -245,6 +225,7 @@ function App() {
         });
       });
   }
+  console.log(curentPopupName);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -268,10 +249,6 @@ function App() {
                 <ProtectedRoute
                   element={Main}
                   loggedIn={loggedIn}
-                  handleEditAvatarClick={handleEditAvatarClick}
-                  handleEditProfileClick={handleEditProfileClick}
-                  handleAddPlaceClick={handleAddPlaceClick}
-                  handleConfirmationClick={handleConfirmationClick}
                   onCardClick={handleCardClick}
                   cards={cards}
                   onCardLike={handleCardLike}
@@ -283,25 +260,25 @@ function App() {
         </Routes>
         <Footer />
         <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
+          isOpen={curentPopupName === 'editProfilePopup'}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
           buttonText={buttonTextEditProfileForm}
         ></EditProfilePopup>
         <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
+          isOpen={curentPopupName === 'editAvatarPopup'}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
           buttonText={buttonTextEditAvatarForm}
         ></EditAvatarPopup>
         <AddPlacePopup
           onAddPlace={handleAddPlaceSubmit}
-          isOpen={isAddPlacePopupOpen}
+          isOpen={curentPopupName === 'addPlacePopupPopup'}
           onClose={closeAllPopups}
           buttonText={buttonTextAddForm}
         ></AddPlacePopup>
         <ConfirmationDeletePopup
-          isOpen={isAconfirmation}
+          isOpen={curentPopupName === 'confirmDeletePopup'}
           onClose={closeAllPopups}
           buttonText={buttonTextConfirmationPopup}
           handleDeletedCard={handleCardDelete}

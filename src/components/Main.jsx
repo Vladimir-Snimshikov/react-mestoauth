@@ -2,8 +2,11 @@ import React from 'react';
 import Card from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { elemClasses } from '../utils/constans';
+import { useDispatch } from 'react-redux';
+import { openPopup, selectPopupName } from '../store/popupSlice.js';
 
 export default function Main(props) {
+  const dispatch = useDispatch();
   const currentUser = React.useContext(CurrentUserContext);
   const {
     content,
@@ -31,7 +34,7 @@ export default function Main(props) {
               alt="фото профиля"
             />
             <button
-              onClick={props.handleEditAvatarClick}
+              onClick={() => dispatch(openPopup('editAvatarPopup'))}
               className={profileAvatarButton}
               type="button"
               aria-label="редактировать аватар"
@@ -44,7 +47,7 @@ export default function Main(props) {
                 type="button"
                 className={profileEditButton}
                 aria-label="редактировать профиль"
-                onClick={props.handleEditProfileClick}
+                onClick={() => dispatch(openPopup('editProfilePopup'))}
               ></button>
             </div>
             <p className={profileProfession}>{currentUser.about}</p>
@@ -53,7 +56,7 @@ export default function Main(props) {
             type="button"
             className={profileAddButton}
             aria-label="добавить карточку"
-            onClick={props.handleAddPlaceClick}
+            onClick={() => dispatch(openPopup('addPlacePopupPopup'))}
           ></button>
         </div>
       </section>
