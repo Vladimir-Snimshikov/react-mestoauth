@@ -1,14 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PopupWithForm from './PopupWithForm';
 import { titleTexts } from '../utils/constans';
+import {
+  deleteCard,
+  currentSelectedCard,
+  selectDeleteCardStatus,
+  selectDeleteCardErrorMessage,
+} from '../store/cardsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeAllPopup } from '../store/popupSlice';
+export default function ConfirmationDeletePopup({ isOpen, onClose }) {
+  const [buttonText, setbuttonText] = useState('Да');
 
-export default function ConfirmationDeletePopup({
-  isOpen,
-  onClose,
-  buttonText,
-  handleDeletedCard,
-}) {
   const { textAreYouSure } = titleTexts;
+  const dispatch = useDispatch();
+  const currentCard = useSelector(currentSelectedCard);
+  const deleteCardStatus = useSelector(selectDeleteCardStatus);
+  const deleteCardErrorMessage = useSelector(selectDeleteCardErrorMessage);
+
+  useEffect(() => {
+    if (deleteCardStatus === 'pending') {
+      setbuttonText('Удаление...');
+    }
+    if (deleteCardStatus === 'success') {
+      dispatch(closeAllPopup());
+      setbuttonText('Да');
+    }
+    if (deleteCardStatus === 'error') {
+      console.log(deleteCardErrorMessage);
+    }
+  }, [deleteCardStatus]);
+
+  function handleDeletedCard(e) {
+    e.preventDefault();
+
+    dispatch(deleteCard(currentCard._id));
+  }
   return (
     <PopupWithForm
       name="confirmation"

@@ -20,10 +20,10 @@ import * as auth from '../utils/auth.js';
 import { tooltip } from '../utils/utils.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeAllPopup, selectPopupName } from '../store/popupSlice.js';
+import { getAllCards } from '../store/cardsSlice.js';
 
 function App() {
-  const { textRemoval, textToCreate, textSave, textConservation } =
-    saveButtonText;
+  const { textSave, textConservation } = saveButtonText;
   const [isOpenLargePictures, setIsOpenLargePictures] = useState(false);
   const [infoTooltip, setInfoTooltip] = useState({
     message: '',
@@ -34,30 +34,25 @@ function App() {
   const dispatch = useDispatch();
 
   const [selectedCard, setSelectedCard] = useState({});
-  const [buttonTextAddForm, setButtonTextAddForm] = useState(textToCreate);
   const [buttonTextEditProfileForm, setButtonTextEditProfileForm] =
     useState(textSave);
   const [buttonTextEditAvatarForm, setButtonTextEditAvatarForm] =
     useState(textSave);
-  const [buttonTextConfirmationPopup, setButtonTextConfirmationPopup] =
-    useState('Да');
-
-  const [cardForDeleted, setCardForDeleted] = useState(null);
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
-  const [isconfirmation, setisconfirmation] = useState(false);
   const navigate = useNavigate();
 
   const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
     if (loggedIn) {
+      dispatch(getAllCards());
+
       setPageLoading(true);
-      Promise.all([api.getUserInfo(), api.getAllCards()])
-        .then(([userInfo, allCards]) => {
+      Promise.all([api.getUserInfo()])
+        .then(([userInfo]) => {
           navigate('/', { replace: true });
-          setCards(allCards);
           setCurrentUser({ ...currentUser, ...userInfo });
         })
         .catch((err) => {
@@ -126,22 +121,6 @@ function App() {
       });
   }
 
-  function handleAddPlaceSubmit(cardData) {
-    setButtonTextAddForm(textConservation);
-    api
-      .addCard(cardData)
-      .then((newCard) => {
-        setCards([newCard, ...cards]);
-        dispatch(closeAllPopup());
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setButtonTextAddForm(textToCreate);
-      });
-  }
-
   function handleLoginClick(password, email) {
     auth.login(password, email).then((data) => {
       localStorage.setItem('jwt', data.token);
@@ -169,29 +148,6 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
-      });
-  }
-
-  function handlebucketClick(card) {
-    setCardForDeleted(card);
-  }
-
-  function handleCardDelete(e) {
-    e.preventDefault();
-    setButtonTextConfirmationPopup(textRemoval);
-    api
-      .deleteCard(cardForDeleted._id)
-      .then(() => {
-        setCards((state) => state.filter((c) => c._id !== cardForDeleted._id));
-      })
-      .then(() => {
-        dispatch(closeAllPopup());
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setButtonTextConfirmationPopup('Да');
       });
   }
 
@@ -225,7 +181,6 @@ function App() {
         });
       });
   }
-  console.log(curentPopupName);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -250,9 +205,7 @@ function App() {
                   element={Main}
                   loggedIn={loggedIn}
                   onCardClick={handleCardClick}
-                  cards={cards}
                   onCardLike={handleCardLike}
-                  onCardDelete={handlebucketClick}
                 />
               )
             }
@@ -272,16 +225,12 @@ function App() {
           buttonText={buttonTextEditAvatarForm}
         ></EditAvatarPopup>
         <AddPlacePopup
-          onAddPlace={handleAddPlaceSubmit}
           isOpen={curentPopupName === 'addPlacePopupPopup'}
           onClose={closeAllPopups}
-          buttonText={buttonTextAddForm}
         ></AddPlacePopup>
         <ConfirmationDeletePopup
           isOpen={curentPopupName === 'confirmDeletePopup'}
           onClose={closeAllPopups}
-          buttonText={buttonTextConfirmationPopup}
-          handleDeletedCard={handleCardDelete}
         ></ConfirmationDeletePopup>
         <ImagePopup
           card={selectedCard}

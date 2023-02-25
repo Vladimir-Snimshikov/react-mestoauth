@@ -3,13 +3,12 @@ import { elemClasses } from '../utils/constans';
 import PopupWithForm from './PopupWithForm';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCard } from '../store/cardsSlice';
+import { closeAllPopup } from '../store/popupSlice.js';
+import { selectCardStatus, selectCardErrorMessage } from '../store/cardsSlice';
 
-export default function AddPlacePopup({
-  onAddPlace,
-  isOpen,
-  onClose,
-  buttonText,
-}) {
+export default function AddPlacePopup({ isOpen, onClose }) {
   const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
   const cardNameRef = React.useRef();
   const cardLinkRef = React.useRef();
@@ -17,14 +16,34 @@ export default function AddPlacePopup({
     useState('');
   const [validationMessageCardLink, setValidationMessageCardLink] =
     useState('');
+  const [buttonText, setButtonText] = useState('Создать');
+
+  const dispatch = useDispatch();
+  const cardStatus = useSelector(selectCardStatus);
+  const cardErrorMessage = useSelector(selectCardErrorMessage);
+
+  useEffect(() => {
+    if (cardStatus === 'error') {
+      console.log(cardErrorMessage);
+    }
+    if (cardStatus === 'loading') {
+      setButtonText('Сохранение...');
+    }
+    if (cardStatus === 'success') {
+      dispatch(closeAllPopup());
+      setButtonText('Создать');
+    }
+  }, [cardStatus]);
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    onAddPlace({
-      name: cardNameRef.current.value,
-      link: cardLinkRef.current.value,
-    });
+    dispatch(
+      addCard({
+        name: cardNameRef.current.value,
+        link: cardLinkRef.current.value,
+      })
+    );
   }
 
   function handleChangeCardLink(e) {

@@ -3,6 +3,7 @@ import { elemClasses } from '../utils/constans.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { useDispatch } from 'react-redux';
 import { openPopup } from '../store/popupSlice.js';
+import { selectedCard } from '../store/cardsSlice.js';
 
 export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = React.useContext(CurrentUserContext);
@@ -33,7 +34,7 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
 
   function handleCardDelete() {
     dispatch(openPopup('confirmDeletePopup'));
-    onCardDelete(card);
+    dispatch(selectedCard(card));
   }
 
   return (
