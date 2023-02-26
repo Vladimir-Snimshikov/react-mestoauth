@@ -4,21 +4,18 @@ import { api } from '../utils/api';
 const initialState = {
   cardsData: [],
   currentSelectedCard: null,
+  cardForImgPopup: null,
   cardsDataStatus: 'success',
   cardStatus: 'success',
   cardErrormMessage: '',
   cardsDataErrormMessage: '',
   deleteCardStatus: 'success',
   deleteCardErrorMessage: '',
+  cardTheLikeErrormMessage: '',
 };
 export const getAllCards = createAsyncThunk(
   'cards/getAllCards',
   async () => await api.getAllCards()
-);
-
-export const toggleLikeCard = createAsyncThunk(
-  'cards/toggleLikeCard',
-  async (cardId, isLiked) => await api.toggleLike(cardId, isLiked)
 );
 
 export const addCard = createAsyncThunk(
@@ -31,6 +28,13 @@ export const deleteCard = createAsyncThunk(
   async (cardId) => await api.deleteCard(cardId).then(() => cardId)
 );
 
+export const likeTheCard = createAsyncThunk(
+  'cards/likeTheCard',
+  async ({ cardId, isLiked }) => {
+    return await api.toggleLike(cardId, isLiked);
+  }
+);
+
 export const cardsSlice = createSlice({
   name: 'cards',
   initialState,
@@ -38,6 +42,10 @@ export const cardsSlice = createSlice({
     selectedCard: (state, action) => ({
       ...state,
       currentSelectedCard: action.payload,
+    }),
+    selectedCardForImgPopup: (state, action) => ({
+      ...state,
+      cardForImgPopup: action.payload,
     }),
   },
   extraReducers: {
@@ -81,7 +89,6 @@ export const cardsSlice = createSlice({
       };
     },
     [deleteCard.fulfilled]: (state, action) => {
-      console.log('act', action);
       return {
         ...state,
         cardsData: state.cardsData.filter(
@@ -103,16 +110,35 @@ export const cardsSlice = createSlice({
         deleteCardStatus: 'error',
       };
     },
+    [likeTheCard.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        cardsData: state.cardsData.map((c) =>
+          c._id === action.payload._id ? action.payload : c
+        ),
+      };
+    },
+    [likeTheCard.rejected]: (state, action) => {
+      return {
+        ...state,
+        cardTheLikeErrormMessage: action.payload,
+      };
+    },
   },
 });
-export const { selectedCard } = cardsSlice.actions;
-export const selectCards = (state) => state.cards.cardsData;
-export const selectCardsStatus = (state) => state.cards.cardsDataStatus;
+export const { selectedCard, selectedCardForImgPopup } = cardsSlice.actions;
+
+export const selectCardsData = (state) => state.cards.cardsData;
+export const selectCardsDataStatus = (state) => state.cards.cardsDataStatus;
 export const selectCardStatus = (state) => state.cards.cardStatus;
 export const selectCardErrorMessage = (state) => state.cards.cardErrormMessage;
-export const currentSelectedCard = (state) => state.cards.currentSelectedCard;
+export const selectCurrentSelectedCard = (state) =>
+  state.cards.currentSelectedCard;
 export const selectDeleteCardStatus = (state) => state.cards.deleteCardStatus;
 export const selectDeleteCardErrorMessage = (state) =>
   state.cards.deleteCardErrorMessage;
+export const selectCardTheLikeErrormMessage = (state) =>
+  state.cards.cardTheLikeErrormMessage;
+export const selectCardForImgPopup = (state) => state.cards.cardForImgPopup;
 
 export default cardsSlice.reducer;

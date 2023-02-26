@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { elemClasses } from '../utils/constans.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openPopup } from '../store/popupSlice.js';
-import { selectedCard } from '../store/cardsSlice.js';
+import {
+  selectedCard,
+  likeTheCard,
+  selectCardTheLikeErrormMessage,
+  selectedCardForImgPopup,
+} from '../store/cardsSlice.js';
 
-export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
+export default function Card({ card, onCardClick }) {
   const currentUser = React.useContext(CurrentUserContext);
   const {
     cardsLikeImg,
@@ -16,20 +21,27 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
     cardsLikesCounter,
     cardsImg,
   } = elemClasses;
-
+  const dispatch = useDispatch();
+  const cardTheLikeErrormMessage = useSelector(selectCardTheLikeErrormMessage);
   const isLiked = card.likes.some((i) => i._id === currentUser._id);
   const cardLikeButtonClassName = `${cardsLikeImg} ${
     isLiked && cardsLikeImgActive
   }`;
-  const dispatch = useDispatch();
   const isOwn = card.owner._id === currentUser._id;
 
+  useEffect(() => {
+    if (cardTheLikeErrormMessage) {
+      console.log(cardTheLikeErrormMessage);
+    }
+  }, [cardTheLikeErrormMessage]);
+
   function handleCardClick() {
-    onCardClick(card);
+    dispatch(openPopup('imagePopupPopup'));
+    dispatch(selectedCardForImgPopup(card));
   }
 
   function handleLikeClick() {
-    onCardLike(card);
+    dispatch(likeTheCard({ cardId: card._id, isLiked }));
   }
 
   function handleCardDelete() {

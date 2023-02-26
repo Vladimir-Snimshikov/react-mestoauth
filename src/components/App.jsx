@@ -20,11 +20,10 @@ import * as auth from '../utils/auth.js';
 import { tooltip } from '../utils/utils.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeAllPopup, selectPopupName } from '../store/popupSlice.js';
-import { getAllCards } from '../store/cardsSlice.js';
+import { getAllCards, selectedCardForImgPopup } from '../store/cardsSlice.js';
 
 function App() {
   const { textSave, textConservation } = saveButtonText;
-  const [isOpenLargePictures, setIsOpenLargePictures] = useState(false);
   const [infoTooltip, setInfoTooltip] = useState({
     message: '',
     isOpen: false,
@@ -33,12 +32,10 @@ function App() {
   const curentPopupName = useSelector(selectPopupName);
   const dispatch = useDispatch();
 
-  const [selectedCard, setSelectedCard] = useState({});
   const [buttonTextEditProfileForm, setButtonTextEditProfileForm] =
     useState(textSave);
   const [buttonTextEditAvatarForm, setButtonTextEditAvatarForm] =
     useState(textSave);
-  const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
@@ -83,11 +80,6 @@ function App() {
       setPageLoading(false);
     }
   }, []);
-
-  function handleCardClick(card) {
-    setIsOpenLargePictures(true);
-    setSelectedCard(card);
-  }
 
   function handleUpdateUser(data) {
     setButtonTextEditProfileForm(textConservation);
@@ -135,22 +127,6 @@ function App() {
     navigate('/sign-in', { replace: true });
     setLoggedIn(false);
   }
-
-  function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-
-    api
-      .toggleLike(card._id, isLiked)
-      .then((newCard) => {
-        setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
-        );
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
   function closeAllPopups(evt) {
     const { popupOpened, popupExitButton } = elemClasses;
     if (
@@ -158,7 +134,7 @@ function App() {
       evt.target.classList.contains(popupExitButton)
     ) {
       setInfoTooltip({ ...infoTooltip, isOpen: false });
-      setSelectedCard({});
+      dispatch(selectedCardForImgPopup(null));
       dispatch(closeAllPopup());
     }
   }
@@ -201,12 +177,7 @@ function App() {
               pageLoading ? (
                 <Loading />
               ) : (
-                <ProtectedRoute
-                  element={Main}
-                  loggedIn={loggedIn}
-                  onCardClick={handleCardClick}
-                  onCardLike={handleCardLike}
-                />
+                <ProtectedRoute element={Main} loggedIn={loggedIn} />
               )
             }
           ></Route>
@@ -233,8 +204,7 @@ function App() {
           onClose={closeAllPopups}
         ></ConfirmationDeletePopup>
         <ImagePopup
-          card={selectedCard}
-          isOpen={isOpenLargePictures}
+          isOpen={curentPopupName === 'imagePopupPopup'}
           onClose={closeAllPopups}
         ></ImagePopup>
         <InfoTooltip state={infoTooltip} onClose={closeAllPopups}></InfoTooltip>

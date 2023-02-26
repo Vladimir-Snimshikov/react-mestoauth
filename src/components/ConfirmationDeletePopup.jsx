@@ -3,7 +3,7 @@ import PopupWithForm from './PopupWithForm';
 import { titleTexts } from '../utils/constans';
 import {
   deleteCard,
-  currentSelectedCard,
+  selectCurrentSelectedCard,
   selectDeleteCardStatus,
   selectDeleteCardErrorMessage,
 } from '../store/cardsSlice';
@@ -14,7 +14,7 @@ export default function ConfirmationDeletePopup({ isOpen, onClose }) {
 
   const { textAreYouSure } = titleTexts;
   const dispatch = useDispatch();
-  const currentCard = useSelector(currentSelectedCard);
+  const currentCard = useSelector(selectCurrentSelectedCard);
   const deleteCardStatus = useSelector(selectDeleteCardStatus);
   const deleteCardErrorMessage = useSelector(selectDeleteCardErrorMessage);
 

@@ -4,12 +4,12 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { elemClasses } from '../utils/constans';
 import { useDispatch, useSelector } from 'react-redux';
 import { openPopup } from '../store/popupSlice.js';
-import { selectCards } from '../store/cardsSlice';
+import { selectCardsData } from '../store/cardsSlice';
 
 export default function Main(props) {
   const dispatch = useDispatch();
   const currentUser = React.useContext(CurrentUserContext);
-  const allCards = useSelector(selectCards);
+  const cardsData = useSelector(selectCardsData);
   const {
     content,
     profile,
@@ -64,16 +64,8 @@ export default function Main(props) {
       </section>
       <section className={places} aria-label="Секция с карточками">
         <ul className={cards}>
-          {allCards.map((card) => {
-            return (
-              <Card
-                key={card._id}
-                card={card}
-                onCardClick={props.onCardClick}
-                onCardLike={props.onCardLike}
-                onCardDelete={props.onCardDelete}
-              />
-            );
+          {cardsData.map((card) => {
+            return <Card key={card._id} card={card} />;
           })}
         </ul>
       </section>
