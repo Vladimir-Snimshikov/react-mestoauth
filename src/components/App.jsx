@@ -20,22 +20,18 @@ import * as auth from '../utils/auth.js';
 import { tooltip } from '../utils/utils.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeAllPopup, selectPopupName } from '../store/popupSlice.js';
+import { getUserInfo, selectUserInfo } from '../store/currentUserInfoSlice.js';
 import { getAllCards, selectedCardForImgPopup } from '../store/cardsSlice.js';
 
 function App() {
-  const { textSave, textConservation } = saveButtonText;
   const [infoTooltip, setInfoTooltip] = useState({
     message: '',
     isOpen: false,
     error: null,
   });
   const curentPopupName = useSelector(selectPopupName);
+  const userInfo = useSelector(selectUserInfo);
   const dispatch = useDispatch();
-
-  const [buttonTextEditProfileForm, setButtonTextEditProfileForm] =
-    useState(textSave);
-  const [buttonTextEditAvatarForm, setButtonTextEditAvatarForm] =
-    useState(textSave);
   const [currentUser, setCurrentUser] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
@@ -45,6 +41,7 @@ function App() {
   useEffect(() => {
     if (loggedIn) {
       dispatch(getAllCards());
+      dispatch(getUserInfo());
 
       setPageLoading(true);
       Promise.all([api.getUserInfo()])
@@ -80,38 +77,6 @@ function App() {
       setPageLoading(false);
     }
   }, []);
-
-  function handleUpdateUser(data) {
-    setButtonTextEditProfileForm(textConservation);
-    api
-      .editProfile(data)
-      .then((dataUser) => {
-        setCurrentUser({ ...currentUser, ...dataUser });
-        dispatch(closeAllPopup());
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setButtonTextEditProfileForm(textSave);
-      });
-  }
-
-  function handleUpdateAvatar(dataAvatar) {
-    setButtonTextEditAvatarForm(textConservation);
-    api
-      .putAvatar(dataAvatar)
-      .then((dataAvatar) => {
-        setCurrentUser({ ...currentUser, ...dataAvatar });
-        dispatch(closeAllPopup());
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setButtonTextEditAvatarForm(textSave);
-      });
-  }
 
   function handleLoginClick(password, email) {
     auth.login(password, email).then((data) => {
@@ -186,14 +151,10 @@ function App() {
         <EditProfilePopup
           isOpen={curentPopupName === 'editProfilePopup'}
           onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser}
-          buttonText={buttonTextEditProfileForm}
         ></EditProfilePopup>
         <EditAvatarPopup
           isOpen={curentPopupName === 'editAvatarPopup'}
           onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
-          buttonText={buttonTextEditAvatarForm}
         ></EditAvatarPopup>
         <AddPlacePopup
           isOpen={curentPopupName === 'addPlacePopupPopup'}

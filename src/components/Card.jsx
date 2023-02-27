@@ -10,7 +10,7 @@ import {
   selectedCardForImgPopup,
 } from '../store/cardsSlice.js';
 
-export default function Card({ card, onCardClick }) {
+export default function Card({ card }) {
   const currentUser = React.useContext(CurrentUserContext);
   const {
     cardsLikeImg,

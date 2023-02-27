@@ -1,27 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PopupWithForm from './PopupWithForm';
-import { useState } from 'react';
 import { elemClasses, titleTexts } from '../utils/constans';
-import { useEffect } from 'react';
+import { closeAllPopup } from '../store/popupSlice';
+import {
+  editUserInfoAvatar,
+  selectUserInfoUpdateAvatarStatus,
+  selectUserInfoUpdateAvatarErrorMessage,
+} from '../store/currentUserInfoSlice';
 
-export default function EditAvatarPopup({
-  isOpen,
-  onClose,
-  onUpdateAvatar,
-  buttonText,
-}) {
+export default function EditAvatarPopup({ isOpen, onClose }) {
   const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
   const { textUpdateAvatar } = titleTexts;
   const avatarRef = React.useRef();
-
+  const dispatch = useDispatch();
+  const userInfoUpdateAvatarErrorMessage = useSelector(
+    selectUserInfoUpdateAvatarErrorMessage
+  );
+  const userInfoUpdateAvatarStatus = useSelector(
+    selectUserInfoUpdateAvatarStatus
+  );
+  const [buttonText, setButtonText] = useState('Сохранить');
   const [validationMessageLink, setValidatorMessageLink] = useState('');
+
+  useEffect(() => {
+    if (userInfoUpdateAvatarStatus === 'pending') {
+      setButtonText('Сохранение...');
+    }
+    if (userInfoUpdateAvatarStatus === 'success') {
+      setButtonText('Сохранить');
+      dispatch(closeAllPopup());
+    }
+    if (userInfoUpdateAvatarStatus === 'error') {
+      setButtonText('Сохранить');
+      dispatch(closeAllPopup());
+      console.log(userInfoUpdateAvatarErrorMessage);
+    }
+  }, [userInfoUpdateAvatarStatus]);
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    onUpdateAvatar({
-      avatar: avatarRef.current.value,
-    });
+    dispatch(
+      editUserInfoAvatar({
+        avatar: avatarRef.current.value,
+      })
+    );
   }
 
   function handleChangeLink(e) {

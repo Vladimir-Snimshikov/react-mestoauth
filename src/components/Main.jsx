@@ -1,15 +1,15 @@
 import React from 'react';
 import Card from './Card';
-import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { elemClasses } from '../utils/constans';
 import { useDispatch, useSelector } from 'react-redux';
 import { openPopup } from '../store/popupSlice.js';
 import { selectCardsData } from '../store/cardsSlice';
+import { selectUserInfo } from '../store/currentUserInfoSlice';
 
 export default function Main(props) {
   const dispatch = useDispatch();
-  const currentUser = React.useContext(CurrentUserContext);
   const cardsData = useSelector(selectCardsData);
+  const userInfo = useSelector(selectUserInfo);
   const {
     content,
     profile,
@@ -32,7 +32,7 @@ export default function Main(props) {
           <div className={profileAvatarContainer}>
             <img
               className={profileImg}
-              src={currentUser.avatar}
+              src={userInfo.avatar}
               alt="фото профиля"
             />
             <button
@@ -44,7 +44,7 @@ export default function Main(props) {
           </div>
           <div className={profileInfoContainer}>
             <div className={profileNameContainer}>
-              <h1 className="profile__name">{currentUser.name}</h1>
+              <h1 className="profile__name">{userInfo.name}</h1>
               <button
                 type="button"
                 className={profileEditButton}
@@ -52,7 +52,7 @@ export default function Main(props) {
                 onClick={() => dispatch(openPopup('editProfilePopup'))}
               ></button>
             </div>
-            <p className={profileProfession}>{currentUser.about}</p>
+            <p className={profileProfession}>{userInfo.about}</p>
           </div>
           <button
             type="button"

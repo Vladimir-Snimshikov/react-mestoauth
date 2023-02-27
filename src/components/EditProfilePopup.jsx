@@ -1,19 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PopupWithForm from './PopupWithForm';
 import { elemClasses, titleTexts } from '../utils/constans';
 import { useState } from 'react';
-import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  editUserInfo,
+  selectUserInfo,
+  selectUserUpdateInfoStatus,
+  selectUserUpdateInfoErrorMessage,
+} from '../store/currentUserInfoSlice';
+import { closeAllPopup } from '../store/popupSlice';
 
-export default function EditProfilePopup({
-  onClose,
-  isOpen,
-  onUpdateUser,
-  buttonText,
-}) {
+export default function EditProfilePopup({ onClose, isOpen }) {
   const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
-  const { textEditProfile } = titleTexts;
+  const userInfo = useSelector(selectUserInfo);
+  const dispatch = useDispatch();
+  const userInfoStatus = useSelector(selectUserUpdateInfoStatus);
+  const userUpdateInfoErrorMessage = useSelector(
+    selectUserUpdateInfoErrorMessage
+  );
 
-  const currentUser = React.useContext(CurrentUserContext);
+  const { textEditProfile } = titleTexts;
+  const [buttonText, setButtonText] = useState('Сохранить');
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -22,10 +30,25 @@ export default function EditProfilePopup({
   const [validationMessageDescription, setValidationMessagesetDescription] =
     useState('');
 
-  React.useEffect(() => {
-    setName(currentUser.name);
-    setDescription(currentUser.about);
-  }, [currentUser, isOpen]);
+  useEffect(() => {
+    setName(userInfo.name);
+    setDescription(userInfo.about);
+  }, [userInfo, isOpen]);
+
+  useEffect(() => {
+    if (userInfoStatus === 'pending') {
+      setButtonText('Сохранение...');
+    }
+    if (userInfoStatus === 'success') {
+      setButtonText('Сохранить');
+      dispatch(closeAllPopup());
+    }
+    if (userInfoStatus === 'error') {
+      setButtonText('Сохранить');
+      dispatch(closeAllPopup());
+      console.log(userUpdateInfoErrorMessage);
+    }
+  }, [userInfoStatus]);
 
   function handleChangeName(e) {
     setName(e.target.value);
@@ -39,11 +62,12 @@ export default function EditProfilePopup({
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    onUpdateUser({
-      name,
-      about: description,
-    });
+    dispatch(
+      editUserInfo({
+        name,
+        about: description,
+      })
+    );
   }
 
   return (
