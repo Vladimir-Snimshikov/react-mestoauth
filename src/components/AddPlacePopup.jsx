@@ -7,31 +7,35 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addCard } from '../store/cardsSlice';
 import { closeAllPopup } from '../store/popupSlice.js';
 import { selectCardStatus, selectCardErrorMessage } from '../store/cardsSlice';
+import { status, saveButtonText } from '../utils/constans';
+
+const { textToCreate, textConservation } = saveButtonText;
+const { success, error, pending } = status;
+const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
 
 export default function AddPlacePopup({ isOpen, onClose }) {
-  const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
   const cardNameRef = React.useRef();
   const cardLinkRef = React.useRef();
   const [validationMessageCardName, setValidationMessageCardName] =
     useState('');
   const [validationMessageCardLink, setValidationMessageCardLink] =
     useState('');
-  const [buttonText, setButtonText] = useState('Создать');
+  const [buttonText, setButtonText] = useState(textToCreate);
 
   const dispatch = useDispatch();
   const cardStatus = useSelector(selectCardStatus);
   const cardErrorMessage = useSelector(selectCardErrorMessage);
 
   useEffect(() => {
-    if (cardStatus === 'error') {
+    if (cardStatus === error) {
       console.log(cardErrorMessage);
     }
-    if (cardStatus === 'loading') {
-      setButtonText('Сохранение...');
+    if (cardStatus === pending) {
+      setButtonText(textConservation);
     }
-    if (cardStatus === 'success') {
+    if (cardStatus === success) {
       dispatch(closeAllPopup());
-      setButtonText('Создать');
+      setButtonText(textToCreate);
     }
   }, [cardStatus]);
 

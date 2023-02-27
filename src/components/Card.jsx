@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { elemClasses } from '../utils/constans.js';
-import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { openPopup } from '../store/popupSlice.js';
 import {
@@ -9,25 +8,27 @@ import {
   selectCardTheLikeErrormMessage,
   selectedCardForImgPopup,
 } from '../store/cardsSlice.js';
+import { selectUserInfo } from '../store/currentUserInfoSlice.js';
+
+const {
+  cardsLikeImg,
+  cardsLikeImgActive,
+  cardsItem,
+  cardsDleteButton,
+  cardsTitle,
+  cardsLikesCounter,
+  cardsImg,
+} = elemClasses;
 
 export default function Card({ card }) {
-  const currentUser = React.useContext(CurrentUserContext);
-  const {
-    cardsLikeImg,
-    cardsLikeImgActive,
-    cardsItem,
-    cardsDleteButton,
-    cardsTitle,
-    cardsLikesCounter,
-    cardsImg,
-  } = elemClasses;
   const dispatch = useDispatch();
+  const userInfo = useSelector(selectUserInfo);
   const cardTheLikeErrormMessage = useSelector(selectCardTheLikeErrormMessage);
-  const isLiked = card.likes.some((i) => i._id === currentUser._id);
+  const isLiked = card.likes.some((i) => i._id === userInfo._id);
   const cardLikeButtonClassName = `${cardsLikeImg} ${
     isLiked && cardsLikeImgActive
   }`;
-  const isOwn = card.owner._id === currentUser._id;
+  const isOwn = card.owner._id === userInfo._id;
 
   useEffect(() => {
     if (cardTheLikeErrormMessage) {

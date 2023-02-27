@@ -75,3 +75,9 @@ export const tooltip = {
   message: 'Вы успешно зарегистрировались!',
   messageErr: 'Что-то пошло не так!Попробуйте ещё раз',
 };
+
+export const status = {
+  success: 'success',
+  error: 'error',
+  pending: 'pending',
+};

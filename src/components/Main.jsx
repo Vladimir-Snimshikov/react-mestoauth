@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Card from './Card';
 import { elemClasses } from '../utils/constans';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,25 +6,33 @@ import { openPopup } from '../store/popupSlice.js';
 import { selectCardsData } from '../store/cardsSlice';
 import { selectUserInfo } from '../store/currentUserInfoSlice';
 
+const {
+  content,
+  profile,
+  profileConteiner,
+  profileAvatarContainer,
+  profileImg,
+  profileAvatarButton,
+  profileInfoContainer,
+  profileNameContainer,
+  profileEditButton,
+  profileProfession,
+  profileAddButton,
+  cards,
+  places,
+} = elemClasses;
+
 export default function Main(props) {
   const dispatch = useDispatch();
   const cardsData = useSelector(selectCardsData);
   const userInfo = useSelector(selectUserInfo);
-  const {
-    content,
-    profile,
-    profileConteiner,
-    profileAvatarContainer,
-    profileImg,
-    profileAvatarButton,
-    profileInfoContainer,
-    profileNameContainer,
-    profileEditButton,
-    profileProfession,
-    profileAddButton,
-    cards,
-    places,
-  } = elemClasses;
+
+  const generateCards = useMemo(() => {
+    return cardsData.map((card) => {
+      return <Card key={card._id} card={card} />;
+    });
+  }, [cardsData]);
+
   return (
     <main className={content}>
       <section className={profile}>
@@ -63,11 +71,7 @@ export default function Main(props) {
         </div>
       </section>
       <section className={places} aria-label="Секция с карточками">
-        <ul className={cards}>
-          {cardsData.map((card) => {
-            return <Card key={card._id} card={card} />;
-          })}
-        </ul>
+        <ul className={cards}>{generateCards}</ul>
       </section>
     </main>
   );

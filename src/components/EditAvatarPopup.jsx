@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PopupWithForm from './PopupWithForm';
-import { elemClasses, titleTexts } from '../utils/constans';
+import {
+  elemClasses,
+  titleTexts,
+  status,
+  saveButtonText,
+} from '../utils/constans';
 import { closeAllPopup } from '../store/popupSlice';
 import {
   editUserInfoAvatar,
@@ -9,9 +14,12 @@ import {
   selectUserInfoUpdateAvatarErrorMessage,
 } from '../store/currentUserInfoSlice';
 
+const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
+const { textUpdateAvatar } = titleTexts;
+const { success, error, pending } = status;
+const { textSave, textConservation } = saveButtonText;
+
 export default function EditAvatarPopup({ isOpen, onClose }) {
-  const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
-  const { textUpdateAvatar } = titleTexts;
   const avatarRef = React.useRef();
   const dispatch = useDispatch();
   const userInfoUpdateAvatarErrorMessage = useSelector(
@@ -20,19 +28,19 @@ export default function EditAvatarPopup({ isOpen, onClose }) {
   const userInfoUpdateAvatarStatus = useSelector(
     selectUserInfoUpdateAvatarStatus
   );
-  const [buttonText, setButtonText] = useState('Сохранить');
+  const [buttonText, setButtonText] = useState(textSave);
   const [validationMessageLink, setValidatorMessageLink] = useState('');
 
   useEffect(() => {
-    if (userInfoUpdateAvatarStatus === 'pending') {
-      setButtonText('Сохранение...');
+    if (userInfoUpdateAvatarStatus === pending) {
+      setButtonText(textConservation);
     }
-    if (userInfoUpdateAvatarStatus === 'success') {
-      setButtonText('Сохранить');
+    if (userInfoUpdateAvatarStatus === success) {
+      setButtonText(textSave);
       dispatch(closeAllPopup());
     }
-    if (userInfoUpdateAvatarStatus === 'error') {
-      setButtonText('Сохранить');
+    if (userInfoUpdateAvatarStatus === error) {
+      setButtonText(textSave);
       dispatch(closeAllPopup());
       console.log(userInfoUpdateAvatarErrorMessage);
     }

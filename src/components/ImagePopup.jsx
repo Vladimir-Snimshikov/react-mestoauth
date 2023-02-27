@@ -1,16 +1,18 @@
 import { elemClasses } from '../utils/constans';
 import { selectCardForImgPopup } from '../store/cardsSlice';
 import { useSelector } from 'react-redux';
+
+const {
+  popup,
+  popupTypeLargePicture,
+  popupOpened,
+  popupExitButton,
+  largePicture,
+  largePictureImg,
+  largePictureSignature,
+} = elemClasses;
+
 export default function ImagePopup({ isOpen, onClose }) {
-  const {
-    popup,
-    popupTypeLargePicture,
-    popupOpened,
-    popupExitButton,
-    largePicture,
-    largePictureImg,
-    largePictureSignature,
-  } = elemClasses;
   const cardForImgPopup = useSelector(selectCardForImgPopup);
   return (
     <div

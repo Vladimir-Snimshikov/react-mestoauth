@@ -1,7 +1,6 @@
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { api } from '../utils/api.js';
-import { elemClasses, saveButtonText } from '../utils/constans.js';
+import { elemClasses, status } from '../utils/constans.js';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -11,7 +10,6 @@ import ConfirmationDeletePopup from './ConfirmationDeletePopup';
 import InfoTooltip from './InfoTooltip';
 import ImagePopup from './ImagePopup';
 import ProtectedRoute from './ProtectedRoute';
-import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import AddPlacePopup from './AddPlacePopup';
 import Register from './Register';
 import Login from './Login';
@@ -20,8 +18,21 @@ import * as auth from '../utils/auth.js';
 import { tooltip } from '../utils/utils.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeAllPopup, selectPopupName } from '../store/popupSlice.js';
-import { getUserInfo, selectUserInfo } from '../store/currentUserInfoSlice.js';
-import { getAllCards, selectedCardForImgPopup } from '../store/cardsSlice.js';
+import { addEmail } from '../store/currentUserInfoSlice.js';
+import {
+  getUserInfo,
+  selectUserInfoErrorMessage,
+  selectUserInfoStatus,
+} from '../store/currentUserInfoSlice.js';
+import {
+  getAllCards,
+  selectCardsDataErrormMessage,
+  selectCardsDataStatus,
+  selectedCardForImgPopup,
+} from '../store/cardsSlice.js';
+
+const { success, error } = status;
+const { popupOpened, popupExitButton } = elemClasses;
 
 function App() {
   const [infoTooltip, setInfoTooltip] = useState({
@@ -29,32 +40,33 @@ function App() {
     isOpen: false,
     error: null,
   });
-  const curentPopupName = useSelector(selectPopupName);
-  const userInfo = useSelector(selectUserInfo);
+
   const dispatch = useDispatch();
-  const [currentUser, setCurrentUser] = useState({});
-  const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
 
+  const [loggedIn, setLoggedIn] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
+
+  const userInfoStatus = useSelector(selectUserInfoStatus);
+  const cardsDataStatus = useSelector(selectCardsDataStatus);
+  const cardsDataErrormMessage = useSelector(selectCardsDataErrormMessage);
+  const userInfoErrorMessage = useSelector(selectUserInfoErrorMessage);
+  const curentPopupName = useSelector(selectPopupName);
 
   useEffect(() => {
     if (loggedIn) {
+      setPageLoading(true);
       dispatch(getAllCards());
       dispatch(getUserInfo());
-
-      setPageLoading(true);
-      Promise.all([api.getUserInfo()])
-        .then(([userInfo]) => {
-          navigate('/', { replace: true });
-          setCurrentUser({ ...currentUser, ...userInfo });
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setPageLoading(false);
-        });
+      navigate('/', { replace: true });
+      if (userInfoStatus === success && cardsDataStatus === success) {
+        setPageLoading(false);
+      }
+      if (userInfoStatus === error || cardsDataStatus === error) {
+        setPageLoading(false);
+        console.log(userInfoErrorMessage);
+        console.log(cardsDataErrormMessage);
+      }
     }
   }, [loggedIn]);
 
@@ -65,7 +77,7 @@ function App() {
         .auth(jwt)
         .then((res) => {
           setLoggedIn(true);
-          setCurrentUser({ ...currentUser, email: res.data.email });
+          dispatch(addEmail(res.data.email));
         })
         .catch((err) => {
           console.log(err);
@@ -81,7 +93,7 @@ function App() {
   function handleLoginClick(password, email) {
     auth.login(password, email).then((data) => {
       localStorage.setItem('jwt', data.token);
-      setCurrentUser({ ...currentUser, email: email });
+      dispatch(addEmail(email));
       setLoggedIn(true);
       navigate('/', { replace: true });
     });
@@ -93,7 +105,6 @@ function App() {
     setLoggedIn(false);
   }
   function closeAllPopups(evt) {
-    const { popupOpened, popupExitButton } = elemClasses;
     if (
       evt.target.classList.contains(popupOpened) ||
       evt.target.classList.contains(popupExitButton)
@@ -124,53 +135,51 @@ function App() {
   }
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
-      <div className="root">
-        <Header handleLoginClick={handleLogOutClick} isLoggin={loggedIn} />
-        <Routes>
-          <Route
-            path="/sign-in"
-            element={<Login handleLoginClick={handleLoginClick} />}
-          ></Route>
-          <Route
-            path="/sign-up"
-            element={<Register handleRegisterClick={handleRegisterClick} />}
-          ></Route>
-          <Route
-            path="/"
-            element={
-              pageLoading ? (
-                <Loading />
-              ) : (
-                <ProtectedRoute element={Main} loggedIn={loggedIn} />
-              )
-            }
-          ></Route>
-        </Routes>
-        <Footer />
-        <EditProfilePopup
-          isOpen={curentPopupName === 'editProfilePopup'}
-          onClose={closeAllPopups}
-        ></EditProfilePopup>
-        <EditAvatarPopup
-          isOpen={curentPopupName === 'editAvatarPopup'}
-          onClose={closeAllPopups}
-        ></EditAvatarPopup>
-        <AddPlacePopup
-          isOpen={curentPopupName === 'addPlacePopupPopup'}
-          onClose={closeAllPopups}
-        ></AddPlacePopup>
-        <ConfirmationDeletePopup
-          isOpen={curentPopupName === 'confirmDeletePopup'}
-          onClose={closeAllPopups}
-        ></ConfirmationDeletePopup>
-        <ImagePopup
-          isOpen={curentPopupName === 'imagePopupPopup'}
-          onClose={closeAllPopups}
-        ></ImagePopup>
-        <InfoTooltip state={infoTooltip} onClose={closeAllPopups}></InfoTooltip>
-      </div>
-    </CurrentUserContext.Provider>
+    <div className="root">
+      <Header handleLoginClick={handleLogOutClick} isLoggin={loggedIn} />
+      <Routes>
+        <Route
+          path="/sign-in"
+          element={<Login handleLoginClick={handleLoginClick} />}
+        ></Route>
+        <Route
+          path="/sign-up"
+          element={<Register handleRegisterClick={handleRegisterClick} />}
+        ></Route>
+        <Route
+          path="/"
+          element={
+            pageLoading ? (
+              <Loading />
+            ) : (
+              <ProtectedRoute element={Main} loggedIn={loggedIn} />
+            )
+          }
+        ></Route>
+      </Routes>
+      <Footer />
+      <EditProfilePopup
+        isOpen={curentPopupName === 'editProfilePopup'}
+        onClose={closeAllPopups}
+      ></EditProfilePopup>
+      <EditAvatarPopup
+        isOpen={curentPopupName === 'editAvatarPopup'}
+        onClose={closeAllPopups}
+      ></EditAvatarPopup>
+      <AddPlacePopup
+        isOpen={curentPopupName === 'addPlacePopupPopup'}
+        onClose={closeAllPopups}
+      ></AddPlacePopup>
+      <ConfirmationDeletePopup
+        isOpen={curentPopupName === 'confirmDeletePopup'}
+        onClose={closeAllPopups}
+      ></ConfirmationDeletePopup>
+      <ImagePopup
+        isOpen={curentPopupName === 'imagePopupPopup'}
+        onClose={closeAllPopups}
+      ></ImagePopup>
+      <InfoTooltip state={infoTooltip} onClose={closeAllPopups}></InfoTooltip>
+    </div>
   );
 }
 

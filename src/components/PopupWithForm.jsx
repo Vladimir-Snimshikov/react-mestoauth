@@ -1,4 +1,16 @@
 import { elemClasses } from '../utils/constans';
+
+const {
+  popup,
+  popupOpened,
+  popupContainer,
+  popupForm,
+  popupTitle,
+  popupSubmiButton,
+  popupSubmitButtonDisabled,
+  popupExitButton,
+} = elemClasses;
+
 export default function PopupWithForm({
   onClose,
   name,
@@ -9,16 +21,6 @@ export default function PopupWithForm({
   onSubmit,
   validity,
 }) {
-  const {
-    popup,
-    popupOpened,
-    popupContainer,
-    popupForm,
-    popupTitle,
-    popupSubmiButton,
-    popupSubmitButtonDisabled,
-    popupExitButton,
-  } = elemClasses;
   return (
     <div
       onClick={onClose}

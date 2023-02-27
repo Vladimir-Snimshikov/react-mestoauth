@@ -1,20 +1,21 @@
 import logo from '../images/header-logo.svg';
-import React from 'react';
-import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { useLocation, Link } from 'react-router-dom';
 import { elemClasses } from '../utils/constans';
+import { selectUserInfo } from '../store/currentUserInfoSlice';
+import { useSelector } from 'react-redux';
+
+const { header, headerLogo, headerInfoContainer, headerEmail } = elemClasses;
 
 export default function Header({ handleLoginClick }) {
-  const { header, headerLogo, headerInfoContainer, headerEmail } = elemClasses;
   const location = useLocation();
-  const currentUser = React.useContext(CurrentUserContext);
+  const userInfo = useSelector(selectUserInfo);
 
   return (
     <header className={header}>
       <img className={headerLogo} src={logo} alt="логотип Mesto" />
       <div className={headerInfoContainer}>
         {location.pathname === '/' && (
-          <span className={headerEmail}>{currentUser.email}</span>
+          <span className={headerEmail}>{userInfo.email}</span>
         )}
         <Link
           to={

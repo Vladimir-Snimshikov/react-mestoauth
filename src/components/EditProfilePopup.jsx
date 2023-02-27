@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
 import PopupWithForm from './PopupWithForm';
-import { elemClasses, titleTexts } from '../utils/constans';
+import {
+  elemClasses,
+  titleTexts,
+  status,
+  saveButtonText,
+} from '../utils/constans';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,8 +16,12 @@ import {
 } from '../store/currentUserInfoSlice';
 import { closeAllPopup } from '../store/popupSlice';
 
+const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
+const { textEditProfile } = titleTexts;
+const { success, error, pending } = status;
+const { textSave, textConservation } = saveButtonText;
+
 export default function EditProfilePopup({ onClose, isOpen }) {
-  const { popupInput, popupInputSpan, popupInputSpanTypeError } = elemClasses;
   const userInfo = useSelector(selectUserInfo);
   const dispatch = useDispatch();
   const userInfoStatus = useSelector(selectUserUpdateInfoStatus);
@@ -20,9 +29,7 @@ export default function EditProfilePopup({ onClose, isOpen }) {
     selectUserUpdateInfoErrorMessage
   );
 
-  const { textEditProfile } = titleTexts;
-  const [buttonText, setButtonText] = useState('Сохранить');
-
+  const [buttonText, setButtonText] = useState(textSave);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
@@ -36,15 +43,15 @@ export default function EditProfilePopup({ onClose, isOpen }) {
   }, [userInfo, isOpen]);
 
   useEffect(() => {
-    if (userInfoStatus === 'pending') {
-      setButtonText('Сохранение...');
+    if (userInfoStatus === pending) {
+      setButtonText(textConservation);
     }
-    if (userInfoStatus === 'success') {
-      setButtonText('Сохранить');
+    if (userInfoStatus === success) {
+      setButtonText(textSave);
       dispatch(closeAllPopup());
     }
-    if (userInfoStatus === 'error') {
-      setButtonText('Сохранить');
+    if (userInfoStatus === error) {
+      setButtonText(textSave);
       dispatch(closeAllPopup());
       console.log(userUpdateInfoErrorMessage);
     }

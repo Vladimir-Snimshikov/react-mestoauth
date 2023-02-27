@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { elemClasses } from '../utils/constans';
 
+const { auth, authTitle, authInput, authButton, authLink, form } = elemClasses;
+
 function Register({ handleRegisterClick }) {
-  const { auth, authTitle, authInput, authButton, authLink, form } =
-    elemClasses;
   const [formValue, setFormValue] = useState({
     password: '',
     email: '',

@@ -1,15 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../utils/api';
+import { status } from '../utils/constans';
+
+const { success, error, pending } = status;
 
 const initialState = {
   cardsData: [],
   currentSelectedCard: null,
   cardForImgPopup: null,
-  cardsDataStatus: 'success',
-  cardStatus: 'success',
+  cardsDataStatus: success,
+  cardStatus: success,
   cardErrormMessage: '',
   cardsDataErrormMessage: '',
-  deleteCardStatus: 'success',
+  deleteCardStatus: success,
   deleteCardErrorMessage: '',
   cardTheLikeErrormMessage: '',
 };
@@ -52,39 +55,39 @@ export const cardsSlice = createSlice({
     [getAllCards.pending]: (state, action) => {
       return {
         ...state,
-        cardsDataStatus: 'loading',
+        cardsDataStatus: pending,
       };
     },
     [getAllCards.fulfilled]: (state, action) => {
       return {
         cardsData: action.payload,
-        cardsDataStatus: 'success',
+        cardsDataStatus: success,
       };
     },
     [getAllCards.rejected]: (state, action) => {
       return {
         ...state,
-        cardsDataStatus: 'success',
+        cardsDataStatus: success,
         cardsDataErrormMessage: action.payload,
       };
     },
     [addCard.pending]: (state, action) => {
       return {
         ...state,
-        cardStatus: 'loading',
+        cardStatus: pending,
       };
     },
     [addCard.fulfilled]: (state, action) => {
       return {
         ...state,
-        cardStatus: 'success',
+        cardStatus: success,
         cardsData: [action.payload, ...state.cardsData],
       };
     },
     [addCard.rejected]: (state, action) => {
       return {
         ...state,
-        cardStatus: 'error',
+        cardStatus: error,
         cardErrormMessage: action.payload,
       };
     },
@@ -94,20 +97,20 @@ export const cardsSlice = createSlice({
         cardsData: state.cardsData.filter(
           (card) => card._id !== action.payload
         ),
-        deleteCardStatus: 'success',
+        deleteCardStatus: success,
       };
     },
     [deleteCard.pending]: (state, action) => {
       return {
         ...state,
-        deleteCardStatus: 'pending',
+        deleteCardStatus: pending,
       };
     },
     [deleteCard.rejected]: (state, action) => {
       return {
         ...state,
         deleteCardErrorMessage: action.payload,
-        deleteCardStatus: 'error',
+        deleteCardStatus: error,
       };
     },
     [likeTheCard.fulfilled]: (state, action) => {
@@ -130,6 +133,8 @@ export const { selectedCard, selectedCardForImgPopup } = cardsSlice.actions;
 
 export const selectCardsData = (state) => state.cards.cardsData;
 export const selectCardsDataStatus = (state) => state.cards.cardsDataStatus;
+export const selectCardsDataErrormMessage = (state) =>
+  state.cards.cardsDataErrormMessage;
 export const selectCardStatus = (state) => state.cards.cardStatus;
 export const selectCardErrorMessage = (state) => state.cards.cardErrormMessage;
 export const selectCurrentSelectedCard = (state) =>
