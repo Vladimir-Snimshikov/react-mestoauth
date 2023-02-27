@@ -19,11 +19,12 @@
 
 ## Использованные технологии:
 
-- React.
-- JAVASCRIPT.
-- react-router-dom'
-- HTML;
-- CSS;
+- React,
+- JAVASCRIPT,
+-Redux,
+- react-router-dom',
+- HTML,
+- CSS,
 
 ## Быстрый запуск:
 
