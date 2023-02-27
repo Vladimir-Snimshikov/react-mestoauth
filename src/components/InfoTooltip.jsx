@@ -1,15 +1,17 @@
 import { elemClasses } from '../utils/constans';
+
+const {
+  auth,
+  popup,
+  popupOpened,
+  popupContainer,
+  authTooltipImage,
+  authTooltipImage_error,
+  authTooltipText,
+  popupExitButton,
+} = elemClasses;
+
 function InfoTooltip({ onClose, state }) {
-  const {
-    auth,
-    popup,
-    popupOpened,
-    popupContainer,
-    authTooltipImage,
-    authTooltipImage_error,
-    authTooltipText,
-    popupExitButton,
-  } = elemClasses;
   return (
     <div className={`${popup}  ${state.isOpen ? popupOpened : ''}`}>
       <div className={`${auth} ${popupContainer}`}>

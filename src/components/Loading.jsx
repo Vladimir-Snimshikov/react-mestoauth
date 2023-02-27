@@ -1,6 +1,8 @@
 import { elemClasses } from '../utils/constans';
+
+const { preloader, preloaderItem } = elemClasses;
+
 function Loading() {
-  const { preloader, preloaderItem } = elemClasses;
   const item = <span className={preloaderItem}></span>;
   return (
     <div className={preloader}>

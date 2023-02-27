@@ -1,36 +1,53 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { elemClasses } from '../utils/constans.js';
-import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { openPopup } from '../store/popupSlice.js';
+import {
+  selectedCard,
+  likeTheCard,
+  selectCardTheLikeErrormMessage,
+  selectedCardForImgPopup,
+} from '../store/cardsSlice.js';
+import { selectUserInfo } from '../store/currentUserInfoSlice.js';
 
-export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
-  const currentUser = React.useContext(CurrentUserContext);
-  const {
-    cardsLikeImg,
-    cardsLikeImgActive,
-    cardsItem,
-    cardsDleteButton,
-    cardsTitle,
-    cardsLikesCounter,
-    cardsImg,
-  } = elemClasses;
+const {
+  cardsLikeImg,
+  cardsLikeImgActive,
+  cardsItem,
+  cardsDleteButton,
+  cardsTitle,
+  cardsLikesCounter,
+  cardsImg,
+} = elemClasses;
 
-  const isLiked = card.likes.some((i) => i._id === currentUser._id);
+export default function Card({ card }) {
+  const dispatch = useDispatch();
+  const userInfo = useSelector(selectUserInfo);
+  const cardTheLikeErrormMessage = useSelector(selectCardTheLikeErrormMessage);
+  const isLiked = card.likes.some((i) => i._id === userInfo._id);
   const cardLikeButtonClassName = `${cardsLikeImg} ${
     isLiked && cardsLikeImgActive
   }`;
+  const isOwn = card.owner._id === userInfo._id;
 
-  const isOwn = card.owner._id === currentUser._id;
+  useEffect(() => {
+    if (cardTheLikeErrormMessage) {
+      console.log(cardTheLikeErrormMessage);
+    }
+  }, [cardTheLikeErrormMessage]);
 
   function handleCardClick() {
-    onCardClick(card);
+    dispatch(openPopup('imagePopupPopup'));
+    dispatch(selectedCardForImgPopup(card));
   }
 
   function handleLikeClick() {
-    onCardLike(card);
+    dispatch(likeTheCard({ cardId: card._id, isLiked }));
   }
 
   function handleCardDelete() {
-    onCardDelete(card);
+    dispatch(openPopup('confirmDeletePopup'));
+    dispatch(selectedCard(card));
   }
 
   return (

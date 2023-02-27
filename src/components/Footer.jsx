@@ -1,6 +1,8 @@
 import { elemClasses } from '../utils/constans';
+
+const { footer, footerCopyright } = elemClasses;
+
 export default function Footer() {
-  const { footer, footerCopyright } = elemClasses;
   let currentYear = new Date().getFullYear();
   return (
     <footer className={footer}>

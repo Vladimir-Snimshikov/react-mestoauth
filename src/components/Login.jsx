@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { elemClasses } from '../utils/constans';
 
+const { auth, authTitle, authInput, authButton } = elemClasses;
+
 function Login({ handleLoginClick }) {
-  const { auth, authTitle, authInput, authButton } = elemClasses;
   const [formValue, setFormValue] = useState({
     password: '',
     email: '',

@@ -1,25 +1,38 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Card from './Card';
-import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { elemClasses } from '../utils/constans';
+import { useDispatch, useSelector } from 'react-redux';
+import { openPopup } from '../store/popupSlice.js';
+import { selectCardsData } from '../store/cardsSlice';
+import { selectUserInfo } from '../store/currentUserInfoSlice';
+
+const {
+  content,
+  profile,
+  profileConteiner,
+  profileAvatarContainer,
+  profileImg,
+  profileAvatarButton,
+  profileInfoContainer,
+  profileNameContainer,
+  profileEditButton,
+  profileProfession,
+  profileAddButton,
+  cards,
+  places,
+} = elemClasses;
 
 export default function Main(props) {
-  const currentUser = React.useContext(CurrentUserContext);
-  const {
-    content,
-    profile,
-    profileConteiner,
-    profileAvatarContainer,
-    profileImg,
-    profileAvatarButton,
-    profileInfoContainer,
-    profileNameContainer,
-    profileEditButton,
-    profileProfession,
-    profileAddButton,
-    cards,
-    places,
-  } = elemClasses;
+  const dispatch = useDispatch();
+  const cardsData = useSelector(selectCardsData);
+  const userInfo = useSelector(selectUserInfo);
+
+  const generateCards = useMemo(() => {
+    return cardsData.map((card) => {
+      return <Card key={card._id} card={card} />;
+    });
+  }, [cardsData]);
+
   return (
     <main className={content}>
       <section className={profile}>
@@ -27,11 +40,11 @@ export default function Main(props) {
           <div className={profileAvatarContainer}>
             <img
               className={profileImg}
-              src={currentUser.avatar}
+              src={userInfo.avatar}
               alt="фото профиля"
             />
             <button
-              onClick={props.handleEditAvatarClick}
+              onClick={() => dispatch(openPopup('editAvatarPopup'))}
               className={profileAvatarButton}
               type="button"
               aria-label="редактировать аватар"
@@ -39,38 +52,26 @@ export default function Main(props) {
           </div>
           <div className={profileInfoContainer}>
             <div className={profileNameContainer}>
-              <h1 className="profile__name">{currentUser.name}</h1>
+              <h1 className="profile__name">{userInfo.name}</h1>
               <button
                 type="button"
                 className={profileEditButton}
                 aria-label="редактировать профиль"
-                onClick={props.handleEditProfileClick}
+                onClick={() => dispatch(openPopup('editProfilePopup'))}
               ></button>
             </div>
-            <p className={profileProfession}>{currentUser.about}</p>
+            <p className={profileProfession}>{userInfo.about}</p>
           </div>
           <button
             type="button"
             className={profileAddButton}
             aria-label="добавить карточку"
-            onClick={props.handleAddPlaceClick}
+            onClick={() => dispatch(openPopup('addPlacePopupPopup'))}
           ></button>
         </div>
       </section>
       <section className={places} aria-label="Секция с карточками">
-        <ul className={cards}>
-          {props.cards.map((card) => {
-            return (
-              <Card
-                key={card._id}
-                card={card}
-                onCardClick={props.onCardClick}
-                onCardLike={props.onCardLike}
-                onCardDelete={props.onCardDelete}
-              />
-            );
-          })}
-        </ul>
+        <ul className={cards}>{generateCards}</ul>
       </section>
     </main>
   );
