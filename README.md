@@ -21,7 +21,7 @@
 
 - React,
 - JAVASCRIPT,
--Redux,
+- Redux,
 - react-router-dom',
 - HTML,
 - CSS,
